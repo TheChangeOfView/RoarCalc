@@ -1,0 +1,40 @@
+# Separate the ID and the name with an "#"
+H1150#Arizona Eiche grau
+H3470#Astfichte natur
+H1145#Bardolino Eiche natur
+H1511#Bavaria Buche
+H3404#Berglaerche braun
+H1487#Bramberg Fichte
+H3154#Charleston Eiche dunkelbraun
+H3156#Corbridge Eiche grau
+H3395#Corbridge Eiche natur
+H3133#Davos Eiche trueffelbraun
+H3734#Dijon Nussbaum natur
+H1582#Ellmau Buche
+H1250#Esche Navarra
+H3192#Fineline metallic braun
+H3190#Fineline metallic anthrazit
+H3453#Fleetwood lavagrau
+H3450#Fleetwood weiss
+H3326#Gladstone Eiche greige
+H3309#Gladstone Eiche sandbeige
+H3325#Gladstone Eiche tabak
+H1180#Halifax Eiche natur
+H1181#Halifax Eiche tabak
+H1176#Halifax Eiche weiss
+H3303#Hamilton Eiche natur
+H1615#Kirschbaum Verona
+H1277#Lakeland Akazie hell
+H1714#Lincoln Nussbaum
+H3146#Lorenzo Eiche beigebraun
+H1733#Mainau Birke
+H3840#Mandel Ahorn natur
+H1486#Pasadena Pinie
+H1334#Sorano Eiche naturhell
+H1400#Stadlholz
+H1346#Sherman Eiche anthrazit
+H1344#Sherman Eiche cocnacbraun
+H1345#Sherman Eiche grau
+H1702#Tossini Ulme dunkelbraun
+H3157#Vincenza Eiche
+H3158#Vincenza Eiche grau

@@ -1,0 +1,34 @@
+# Separate the ID and the name with an "#"
+W1100 ST9#Alpinweiss
+W1100 ST30#Alpinweiss
+W980 ST2#Platinweiss
+W1000 ST38#Premiumweiss
+U104#Alabasterweiss
+U504#Alpenseeblau
+U788#Arktisgrau
+U114#Brilliantgelb
+U311#Burgundrot
+U321#Chinarot
+U767#Cubanitgrau
+U963#Diamantgrau
+U337#Fuchsiarot
+U961#Graphitschwarz
+U702#Kashmirgrau
+U201#Kieselgrau
+U741#Lavagrau
+U750#Lichtgrau
+U630#Limonengruen
+U600#Maigruen
+U960#Onyxgrau
+U332#Orange
+U763#Perlgrau
+W1200#Porzellanweiss
+U156#Sandbeige
+U999#Schwarz
+U707#Seidengrau
+U323#Signalrot
+U899#Softschwarz
+U732#Staubgrau
+U727#Steingrau
+U560#Tiefseeblau
+U131#Zitrusgelb

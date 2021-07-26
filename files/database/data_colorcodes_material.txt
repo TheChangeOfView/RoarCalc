@@ -1,0 +1,10 @@
+# Separate the ID and the name with an "#"
+F509#Aluminium
+F274#Beton hell
+F187#Chicago Concrete dunkelgrau
+F186#Chicago Concrete hellgrau
+F302#Ferro bronze
+F500#Inox metallic
+F242#Jura Schiefer
+F462#Metallic Indigoblau
+F121#Metal Rock anthrazit
