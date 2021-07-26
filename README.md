@@ -6,6 +6,8 @@
 
 RoarCalc is a hobbyist-made program to easy calculate the measurements of mirror cabinets for production pipeline.
 
+This Program is only tested on a windows 10 OS with python 3.9.2 made to run as an executable.
+
 # Changelog
 
 ## Build 2.1.0
