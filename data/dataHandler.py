@@ -21,7 +21,7 @@ import shutil
 title = "RoarCalc"
 version = 2
 subversion = 1
-subsubversion = 0
+subsubversion = 1
 configIsCompatible = True
 databaseIsCompatible = True
 
@@ -791,7 +791,7 @@ def writeConfigINI():
 
 def writeRCFile():
 
-    import uiHandler
+    from data import uiHandler
 
     rcfOut = None
 
