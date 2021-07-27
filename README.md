@@ -23,3 +23,14 @@ This Program is only tested on a windows 10 OS with python 3.9.2 made to run as 
   - Changed the colorpicker handling and appearance
 
 - Various bug-fixes
+
+
+###### Build 2.1.1
+
+- Fixed a bug which prevented the program to create RC-Files
+
+
+###### Build 2.1.2
+
+- Fixed a language bug
+- Fixed some bugs in calculation
