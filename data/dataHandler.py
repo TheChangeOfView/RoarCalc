@@ -21,7 +21,7 @@ import shutil
 title = "RoarCalc"
 version = 2
 subversion = 1
-subsubversion = 1
+subsubversion = 2
 configIsCompatible = True
 databaseIsCompatible = True
 
@@ -455,6 +455,7 @@ def readLangFile(langFile):
     global lang_fileHandling_calculate
     global lang_fileHandling_RCFile
     global lang_fileHandling_openPDF
+    global lang_fileHandling_printPDF
     global lang_fileHandling_files
     global lang_frmMatPresets
     global lang_matPresets_packaging
@@ -584,6 +585,7 @@ def readLangFile(langFile):
     lang_fileHandling_calculate                     = language["lang_fileHandling_calculate"].replace('"', "")
     lang_fileHandling_RCFile                        = language["lang_fileHandling_RCFile"].replace('"', "")
     lang_fileHandling_openPDF                       = language["lang_fileHandling_openPDF"].replace('"', "")
+    lang_fileHandling_printPDF                      = language["lang_fileHandling_printPDF"].replace('"', "")
     lang_fileHandling_files                         = language["lang_fileHandling_files"].replace('"', "")
     lang_frmMatPresets                              = language["lang_frmMatPresets"].replace('"', "")
     lang_matPresets_packaging                       = language["lang_matPresets_packaging"].replace('"', "")

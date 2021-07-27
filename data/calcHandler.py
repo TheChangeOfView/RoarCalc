@@ -10,7 +10,6 @@
 
 from data import uiHandler, dataHandler
 
-from math import floor
 from tkinter import messagebox as tkmsg
 
 def calculateCuttings(corMainWidth: int, corMainHeight: int, corMainDepth: int):
@@ -208,7 +207,7 @@ def calculateCuttingsGlass(corMainWidth: int, corMainHeight: int, corMainDepth: 
     mainMirrorLength = corMainHeight
     mainMirrorWidth = 0
     if doorAmount > 0:
-        mainMirrorWidth = floor(corMainWidth / doorAmount) - 1
+        mainMirrorWidth = round(corMainWidth / doorAmount) - 1
 
     coveringMirrorCount = 0
     coveringMirrorLength = 0
@@ -222,11 +221,11 @@ def calculateCuttingsGlass(corMainWidth: int, corMainHeight: int, corMainDepth: 
 
             coveringMirrorCount = extraShelfs * 2
 
-            mainMirrorLength -= (floor(matThickness / 2) + 1) * extraShelfs
+            mainMirrorLength -= (round(matThickness / 2) + 1) * extraShelfs
 
             coveringMirrorWidth = corMainWidth
 
-            coveringMirrorLength = extraMeasure + (floor(matThickness / 2) - 1)
+            coveringMirrorLength = extraMeasure + (round(matThickness / 2) - 1)
 
     else:
 
@@ -240,12 +239,12 @@ def calculateCuttingsGlass(corMainWidth: int, corMainHeight: int, corMainDepth: 
             
             coveringMirrorCount = extraWalls * 2
 
-            widthSubstraction += (floor(matThickness / 2) + 1) * extraWalls
+            widthSubstraction += (round(matThickness / 2) + 1) * extraWalls
 
-            coveringMirrorWidth = extraMeasure + (floor(matThickness / 2) - 1)
+            coveringMirrorWidth = extraMeasure + (round(matThickness / 2) - 1)
             coveringMirrorLength = corMainHeight
 
-        mainMirrorWidth = floor((corMainWidth - int(widthSubstraction)) / doorAmount) - 1
+        mainMirrorWidth = round((corMainWidth - int(widthSubstraction)) / doorAmount) - 1
 
     if mainMirrorCount > 0:
 
@@ -272,7 +271,7 @@ def calculateCuttingsGlass(corMainWidth: int, corMainHeight: int, corMainDepth: 
             glassesLength -= matThickness * 3
             glassesLength /= 2
             glassesLength -= matSubtraction
-            glassesLength = floor(glassesLength)
+            glassesLength = round(glassesLength)
 
             glassesCount = shelfAmount * 2
 
@@ -286,12 +285,12 @@ def calculateCuttingsGlass(corMainWidth: int, corMainHeight: int, corMainDepth: 
             glassLength1 = (generalLength / 3) * 2
             glassLength1 -= matThickness * 1.5
             glassLength1 -= matSubtraction
-            glassLength1 = floor(glassLength1)
+            glassLength1 = round(glassLength1)
 
             glassLength2 = (generalLength / 3)
             glassLength2 -= matThickness * 1.5
             glassLength2 -= matSubtraction
-            glassLength2 = floor(glassLength2)
+            glassLength2 = round(glassLength2)
 
             glassesCount = shelfAmount
             
@@ -306,12 +305,12 @@ def calculateCuttingsGlass(corMainWidth: int, corMainHeight: int, corMainDepth: 
             glassLengthOuter = generalLength / 3
             glassLengthOuter -= matThickness * 1.5
             glassLengthOuter -= matSubtraction
-            glassLengthOuter = floor(glassLengthOuter)
+            glassLengthOuter = round(glassLengthOuter)
 
             glassLengthInner = generalLength / 3
             glassLengthInner -= matThickness
             glassLengthInner -= matSubtraction
-            glassLengthInner = floor(glassLengthInner)
+            glassLengthInner = round(glassLengthInner)
 
             glassCountOuter = shelfAmount * 2
             glassCountInner = shelfAmount
@@ -323,8 +322,9 @@ def calculateCuttingsGlass(corMainWidth: int, corMainHeight: int, corMainDepth: 
 
             glassesLength = corMainWidth
             glassesLength -= (extraMeasure + matThickness) * extraWalls
+            glassesLength -= matThickness * 2
             glassesLength -= matSubtraction
-            glassesLength = floor(glassesLength)
+            glassesLength = round(glassesLength)
 
             glassesCount = shelfAmount
 
@@ -334,10 +334,11 @@ def calculateCuttingsGlass(corMainWidth: int, corMainHeight: int, corMainDepth: 
 
             glassesLength = corMainWidth
             glassesLength -= (extraMeasure + matThickness) * extraWalls
-            glassesLength -= matThickness * (doorAmount - 1)
+            glassesLength -= matThickness * 2                               # Subtract the outer Walls
+            glassesLength -= matThickness * (doorAmount - 1)                # Subtract middle Walls
             glassesLength /= 2
             glassesLength -= matSubtraction
-            glassesLength = floor(glassesLength)
+            glassesLength = round(glassesLength)
             
             glassesCount = shelfAmount * doorAmount
             
