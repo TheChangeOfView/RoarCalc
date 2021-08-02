@@ -26,7 +26,7 @@ def continueUpdate():
 
         updateState = deinstallOldRelease(update["update"]["oldpath"])
 
-        if dataHandler.updaterShortcut == True:
+        if dataHandler.dict_updateConfig["updatershortcut"] == True:
 
             createShortcut()
 
@@ -80,7 +80,7 @@ def getChangelog(build):
 
     changelogName = "changelog_" + buildVersion + ".txt"
 
-    changelogPath = os.path.join(dataHandler.fold_tmp, changelogName)
+    changelogPath = os.path.join(dataHandler.tmpDir, changelogName)
 
     if os.path.isfile(changelogPath) == True:
 
@@ -115,7 +115,7 @@ def getChangelog(build):
 
 def downloadRelease(build):
 
-    updaterPath = os.path.join(dataHandler.fold_tmp, "update.zip")
+    updaterPath = os.path.join(dataHandler.tmpDir, "update.zip")
 
     i = 0
     final = None
@@ -168,14 +168,14 @@ def installRelease(zipPath, build):
     time.sleep(5)
 
     # move config and database
-    if dataHandler.updaterExportConfig == True and dataHandler.configIsCompatible == True:
+    if dataHandler.dict_updateConfig["updaterexportconfig"] == True:
 
         src = os.path.join(os.path.abspath(os.curdir), "files", "config.ini")
         dst = os.path.join(movePath, "files", "config.ini")
         os.remove(dst)
         shutil.copy(src, dst)
 
-    if dataHandler.updaterExportDatabase == True and dataHandler.databaseIsCompatible == True:
+    if dataHandler.dict_updateConfig["updaterexportdatabase"] == True:
 
         src = os.path.join(os.path.abspath(os.curdir), "files", "database")
         dst = os.path.join(movePath, "files", "database")

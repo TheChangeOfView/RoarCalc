@@ -8,6 +8,7 @@ import tkinter.ttk as ttk
 from tkinter import messagebox as tkmsg
 from tkinter import filedialog as tkfile
 from subprocess import Popen, PIPE
+import textwrap
 
 from os.path import isdir, isfile, join
 from os import curdir, startfile, remove
@@ -262,7 +263,7 @@ ety_matPresets_LEDInternalVar = None
 
 # other
 cbt_other_autoUpdateVar = None
-ety_other_languageVar = None
+cbb_other_language = None
 
 # updater info
 lbl_updateInfo_state = None
@@ -344,7 +345,7 @@ class mainUserInterface(tk.Frame):
 
                 remove(dataHandler.fPth_update)
 
-        if dataHandler.autoaskUpdate == True:
+        if dataHandler.dict_updateConfig["autoaskupdate"] == True:
 
             self.getLatestRelease()
 
@@ -460,7 +461,6 @@ class mainUserInterface(tk.Frame):
 
         # other
         global cbt_other_autoUpdateVar
-        global ety_other_languageVar
 
         # updater info
         global ety_updateInfo_versionUsedVar
@@ -575,7 +575,6 @@ class mainUserInterface(tk.Frame):
 
         # other
         cbt_other_autoUpdateVar = tk.IntVar()
-        ety_other_languageVar = tk.StringVar()
 
         # updater info
         ety_updateInfo_versionUsedVar = tk.StringVar()
@@ -644,6 +643,42 @@ class mainUserInterface(tk.Frame):
         frm_buttons.grid(row = 1, column = 0, columnspan = 2)
 
         # -------------------------------------- #
+        #      Menubar                           #
+        # -------------------------------------- #
+
+        
+        
+        mnu_main = tk.Menu(self)
+        mnu_file = tk.Menu(mnu_main, tearoff = False)
+        mnu_edit = tk.Menu(mnu_main, tearoff = False)
+        mnu_help = tk.Menu(mnu_main, tearoff = False)
+        
+
+        root.config(menu = mnu_main)
+
+        mnu_main.add_cascade(label = dataHandler.dict_lang["lang_menu_file"], menu = mnu_file)
+        mnu_file.add_command(label = dataHandler.dict_lang["lang_menu_reset"], command = self.mnu_reset_callback)
+        mnu_file.add_command(label = dataHandler.dict_lang["lang_menu_open"], command = self.mnu_open_callback)
+        mnu_file.add_separator()
+        mnu_file.add_command(label = dataHandler.dict_lang["lang_menu_save"], command = self.mnu_save_callback)
+        mnu_file.add_command(label = dataHandler.dict_lang["lang_menu_saveas"], command = self.mnu_saveas_callback)
+        mnu_file.add_separator()
+        mnu_file.add_command(label = dataHandler.dict_lang["lang_menu_quit"], command = self.mnu_quit_callback)
+
+        mnu_main.add_cascade(label = dataHandler.dict_lang["lang_menu_edit"], menu = mnu_edit)
+        mnu_edit.add_command(label = dataHandler.dict_lang["lang_menu_calculate"], command = self.mnu_calculate_callback)
+        mnu_edit.add_command(label = dataHandler.dict_lang["lang_menu_create"], command = self.mnu_create_callback)
+        mnu_edit.add_command(label = dataHandler.dict_lang["lang_menu_opensave"], command = self.mnu_opensave_callback)
+        mnu_edit.add_separator()
+        mnu_edit.add_command(label = dataHandler.dict_lang["lang_menu_settings"], command = self.mnu_settings_callback)
+
+        mnu_main.add_cascade(label = dataHandler.dict_lang["lang_menu_help"], menu = mnu_help)
+        mnu_help.add_command(label = dataHandler.dict_lang["lang_menu_github"], command = self.mnu_github_callback)
+        mnu_help.add_separator()
+        mnu_help.add_command(label = dataHandler.dict_lang["lang_menu_updates"], command = self.mnu_updates_callback)
+
+
+        # -------------------------------------- #
         #      General Info                      #
         # -------------------------------------- #
 
@@ -658,18 +693,18 @@ class mainUserInterface(tk.Frame):
         ety_genInfo_dateVar.set(date.today().strftime("%d/%m/%Y"))
 
         # frame
-        frm_generalInfo = ttk.LabelFrame(master = frm_mainLeftLeft, text = dataHandler.lang_frmGeneralInfo, style = "Bold.TLabelframe")
+        frm_generalInfo = ttk.LabelFrame(master = frm_mainLeftLeft, text = dataHandler.dict_lang["lang_frmGeneralInfo"], style = "Bold.TLabelframe")
         frm_generalInfo.grid(row = 0, column = 0, padx = 5, pady = 0)
 
         frm_generalInfo_widthSpacer = tk.Label(master = frm_generalInfo, width = 23, height = 0)
         frm_generalInfo_widthSpacer.grid(row = 0, column = 0, columnspan = 2)
 
         # label
-        lbl_genInfo_orderID = ttk.Label(master = frm_generalInfo, text = dataHandler.lang_genInfo_orderID)
-        lbl_genInfo_date = ttk.Label(master = frm_generalInfo, text = dataHandler.lang_genInfo_date)
-        lbl_genInfo_type = ttk.Label(master = frm_generalInfo, text = dataHandler.lang_general_type)
-        lbl_genInfo_pto = ttk.Label(master = frm_generalInfo, text = dataHandler.lang_genInfo_pto)
-        lbl_genInfo_specials = ttk.Label(master = frm_generalInfo, text = dataHandler.lang_genInfo_specials)
+        lbl_genInfo_orderID = ttk.Label(master = frm_generalInfo, text = dataHandler.dict_lang["lang_genInfo_orderID"])
+        lbl_genInfo_date = ttk.Label(master = frm_generalInfo, text = dataHandler.dict_lang["lang_genInfo_date"])
+        lbl_genInfo_type = ttk.Label(master = frm_generalInfo, text = dataHandler.dict_lang["lang_general_type"])
+        lbl_genInfo_pto = ttk.Label(master = frm_generalInfo, text = dataHandler.dict_lang["lang_genInfo_pto"])
+        lbl_genInfo_specials = ttk.Label(master = frm_generalInfo, text = dataHandler.dict_lang["lang_genInfo_specials"])
         
         # input
         ety_genInfo_orderID = ttk.Entry(master = frm_generalInfo, width = 11, textvariable = ety_genInfo_orderIDVar, validate = "key", justify = "center")
@@ -705,16 +740,16 @@ class mainUserInterface(tk.Frame):
         global lbl_measure_depth
 
         # frame
-        frm_measure = ttk.LabelFrame(master = frm_mainLeftLeft, text = dataHandler.lang_frmMeasure, style = "Bold.TLabelframe")
+        frm_measure = ttk.LabelFrame(master = frm_mainLeftLeft, text = dataHandler.dict_lang["lang_frmMeasure"], style = "Bold.TLabelframe")
         frm_measure.grid(row = 1, column = 0, padx = 5, pady = 0)
 
         frm_measure_widthSpacer = tk.Label(master = frm_measure, width = 23, height = 0)
         frm_measure_widthSpacer.grid(row = 0, column = 0, columnspan = 2)
 
         # label
-        lbl_measure_width = ttk.Label(master = frm_measure, text = dataHandler.lang_general_width)
-        lbl_measure_height = ttk.Label(master = frm_measure, text = dataHandler.lang_general_height)
-        lbl_measure_depth = ttk.Label(master = frm_measure, text = dataHandler.lang_general_depth)
+        lbl_measure_width = ttk.Label(master = frm_measure, text = dataHandler.dict_lang["lang_general_width"])
+        lbl_measure_height = ttk.Label(master = frm_measure, text = dataHandler.dict_lang["lang_general_height"])
+        lbl_measure_depth = ttk.Label(master = frm_measure, text = dataHandler.dict_lang["lang_general_depth"])
 
         # input
         ety_measure_width = ttk.Entry(master = frm_measure, width = 11, textvariable = ety_measure_widthVar, validate = "key")
@@ -752,19 +787,19 @@ class mainUserInterface(tk.Frame):
         global cbb_corInfo_light
 
         # frame
-        frm_corpusInfo = ttk.LabelFrame(master = frm_mainLeftRight, text = dataHandler.lang_frmCorpusInfo, style = "Bold.TLabelframe")
+        frm_corpusInfo = ttk.LabelFrame(master = frm_mainLeftRight, text = dataHandler.dict_lang["lang_frmCorpusInfo"], style = "Bold.TLabelframe")
         frm_corpusInfo.grid(row = 0, column = 0, padx = 5, pady = 0)
 
         frm_corpusInfo_widthSpacer = tk.Label(master = frm_corpusInfo, width = 23, height = 0)
         frm_corpusInfo_widthSpacer.grid(row = 0, column = 0, columnspan = 2)
 
         # label
-        lbl_corInfo_light = ttk.Label(master = frm_corpusInfo, text = dataHandler.lang_corInfo_light)
-        lbl_corInfo_indLight = ttk.Label(master = frm_corpusInfo, text = dataHandler.lang_corInfo_indLight)
-        lbl_corInfo_door = ttk.Label(master = frm_corpusInfo, text = dataHandler.lang_corInfo_door)
-        lbl_corInfo_shelf = ttk.Label(master = frm_corpusInfo, text = dataHandler.lang_corInfo_shelf)
-        lbl_corInfo_overhangUpper = ttk.Label(master = frm_corpusInfo, text = dataHandler.lang_corInfo_overhangUpper)
-        lbl_corInfo_overhangLower = ttk.Label(master = frm_corpusInfo, text = dataHandler.lang_corInfo_overhangLower)
+        lbl_corInfo_light = ttk.Label(master = frm_corpusInfo, text = dataHandler.dict_lang["lang_corInfo_light"])
+        lbl_corInfo_indLight = ttk.Label(master = frm_corpusInfo, text = dataHandler.dict_lang["lang_corInfo_indLight"])
+        lbl_corInfo_door = ttk.Label(master = frm_corpusInfo, text = dataHandler.dict_lang["lang_corInfo_door"])
+        lbl_corInfo_shelf = ttk.Label(master = frm_corpusInfo, text = dataHandler.dict_lang["lang_corInfo_shelf"])
+        lbl_corInfo_overhangUpper = ttk.Label(master = frm_corpusInfo, text = dataHandler.dict_lang["lang_corInfo_overhangUpper"])
+        lbl_corInfo_overhangLower = ttk.Label(master = frm_corpusInfo, text = dataHandler.dict_lang["lang_corInfo_overhangLower"])
 
         # input
         cbb_corInfo_light = ttk.Combobox(master = frm_corpusInfo, width = 8, state = "readonly")
@@ -811,16 +846,16 @@ class mainUserInterface(tk.Frame):
         global cbb_extra_type
 
         # frame
-        frm_extraSpace = ttk.LabelFrame(master = frm_mainLeftRight, text = dataHandler.lang_frmExtra, style = "Bold.TLabelframe")
+        frm_extraSpace = ttk.LabelFrame(master = frm_mainLeftRight, text = dataHandler.dict_lang["lang_frmExtra"], style = "Bold.TLabelframe")
         frm_extraSpace.grid(row = 1, column = 0, padx = 5, pady = 0)
 
         frm_extraSpace_widthSpacer = tk.Label(master = frm_extraSpace, width = 23, height = 0)
         frm_extraSpace_widthSpacer.grid(row = 0, column = 0, columnspan = 2)
 
         # label
-        lbl_extra_type = ttk.Label(master = frm_extraSpace, text = dataHandler.lang_general_type)
-        lbl_extra_measure = ttk.Label(master = frm_extraSpace, text = dataHandler.lang_extra_measure)
-        lbl_extra_covered = ttk.Label(master = frm_extraSpace, text = dataHandler.lang_extra_covered)
+        lbl_extra_type = ttk.Label(master = frm_extraSpace, text = dataHandler.dict_lang["lang_general_type"])
+        lbl_extra_measure = ttk.Label(master = frm_extraSpace, text = dataHandler.dict_lang["lang_extra_measure"])
+        lbl_extra_covered = ttk.Label(master = frm_extraSpace, text = dataHandler.dict_lang["lang_extra_covered"])
 
         # input
         cbb_extra_type = ttk.Combobox(master = frm_extraSpace, width = 8, state = "readonly")
@@ -859,7 +894,7 @@ class mainUserInterface(tk.Frame):
         global tvw_ntbColor_material_reversed
 
         # frame
-        frm_color = ttk.LabelFrame(master = frm_mainLeft, text = dataHandler.lang_frmColor, style = "Bold.TLabelframe")
+        frm_color = ttk.LabelFrame(master = frm_mainLeft, text = dataHandler.dict_lang["lang_frmColor"], style = "Bold.TLabelframe")
         frm_color.grid(row = 2, column = 0, columnspan = 2, padx = 5, pady = 0)
 
         # icon binding
@@ -883,42 +918,42 @@ class mainUserInterface(tk.Frame):
         ntb_frmWooden = ttk.Frame(master = ntb_colorcode)
         ntb_frmMaterial = ttk.Frame(master = ntb_colorcode)
         
-        ntb_colorcode.add(ntb_frmAluminum, text = dataHandler.lang_color_aluminum, image = self.ptk_colorcode_aluminum, compound = tk.LEFT)
-        ntb_colorcode.add(ntb_frmUnicolor, text = dataHandler.lang_color_unicolor, image = self.ptk_colorcode_unicolor, compound = tk.LEFT)
-        ntb_colorcode.add(ntb_frmWooden, text = dataHandler.lang_color_wood, image = self.ptk_colorcode_wood, compound = tk.LEFT)
-        ntb_colorcode.add(ntb_frmMaterial, text = dataHandler.lang_color_material, image = self.ptk_colorcode_material, compound = tk.LEFT)
+        ntb_colorcode.add(ntb_frmAluminum, text = dataHandler.dict_lang["lang_color_aluminum"], image = self.ptk_colorcode_aluminum, compound = tk.LEFT)
+        ntb_colorcode.add(ntb_frmUnicolor, text = dataHandler.dict_lang["lang_color_unicolor"], image = self.ptk_colorcode_unicolor, compound = tk.LEFT)
+        ntb_colorcode.add(ntb_frmWooden, text = dataHandler.dict_lang["lang_color_wood"], image = self.ptk_colorcode_wood, compound = tk.LEFT)
+        ntb_colorcode.add(ntb_frmMaterial, text = dataHandler.dict_lang["lang_color_material"], image = self.ptk_colorcode_material, compound = tk.LEFT)
 
         # input
         tvw_ntbColor_aluminum = ttk.Treeview(master = ntb_frmAluminum, columns = ("id", "name"), show = "headings", height = 12)
         tvw_ntbColor_aluminum.column("id", width = 75, stretch = False)
         tvw_ntbColor_aluminum.column("name", width = 245, stretch = False)
-        tvw_ntbColor_aluminum.heading("id", text = dataHandler.lang_general_ID, \
+        tvw_ntbColor_aluminum.heading("id", text = dataHandler.dict_lang["lang_general_ID"], \
             command = lambda treeview = tvw_ntbColor_aluminum, column = 0: self.treeviewSort(treeview, column))
-        tvw_ntbColor_aluminum.heading("name", text = dataHandler.lang_general_name, \
+        tvw_ntbColor_aluminum.heading("name", text = dataHandler.dict_lang["lang_general_name"], \
             command = lambda treeview = tvw_ntbColor_aluminum, column = 1: self.treeviewSort(treeview, column))
 
         tvw_ntbColor_unicolor = ttk.Treeview(master = ntb_frmUnicolor, columns = ("id", "name"), show = "headings", height = 12)
         tvw_ntbColor_unicolor.column("id", width = 75, stretch = tk.NO)
         tvw_ntbColor_unicolor.column("name", width = 245, stretch = tk.NO)
-        tvw_ntbColor_unicolor.heading("id", text = dataHandler.lang_general_ID, \
+        tvw_ntbColor_unicolor.heading("id", text = dataHandler.dict_lang["lang_general_ID"], \
             command = lambda treeview = tvw_ntbColor_unicolor, column = 0: self.treeviewSort(treeview, column))
-        tvw_ntbColor_unicolor.heading("name", text = dataHandler.lang_general_name, \
+        tvw_ntbColor_unicolor.heading("name", text = dataHandler.dict_lang["lang_general_name"], \
             command = lambda treeview = tvw_ntbColor_unicolor, column = 1: self.treeviewSort(treeview, column))
 
         tvw_ntbColor_wooden = ttk.Treeview(master = ntb_frmWooden, columns = ("id", "name"), show = "headings", height = 12)
         tvw_ntbColor_wooden.column("id", width = 75, stretch = tk.NO)
         tvw_ntbColor_wooden.column("name", width = 245, stretch = tk.NO)
-        tvw_ntbColor_wooden.heading("id", text = dataHandler.lang_general_ID, \
+        tvw_ntbColor_wooden.heading("id", text = dataHandler.dict_lang["lang_general_ID"], \
             command = lambda treeview = tvw_ntbColor_wooden, column = 0: self.treeviewSort(treeview, column))
-        tvw_ntbColor_wooden.heading("name", text = dataHandler.lang_general_name, \
+        tvw_ntbColor_wooden.heading("name", text = dataHandler.dict_lang["lang_general_name"], \
             command = lambda treeview = tvw_ntbColor_wooden, column = 1: self.treeviewSort(treeview, column))
 
         tvw_ntbColor_material = ttk.Treeview(master = ntb_frmMaterial, columns = ("id", "name"), show = "headings", height = 12)
         tvw_ntbColor_material.column("id", width = 75, stretch = tk.NO)
         tvw_ntbColor_material.column("name", width = 245, stretch = tk.NO)
-        tvw_ntbColor_material.heading("id", text = dataHandler.lang_general_ID, \
+        tvw_ntbColor_material.heading("id", text = dataHandler.dict_lang["lang_general_ID"], \
             command = lambda treeview = tvw_ntbColor_material, column = 0: self.treeviewSort(treeview, column))
-        tvw_ntbColor_material.heading("name", text = dataHandler.lang_general_name, \
+        tvw_ntbColor_material.heading("name", text = dataHandler.dict_lang["lang_general_name"], \
             command = lambda treeview = tvw_ntbColor_material, column = 1: self.treeviewSort(treeview, column))
 
         tvw_ntbColor_aluminum.bind("<<TreeviewSelect>>", lambda event, treeview = tvw_ntbColor_aluminum: self.treeviewChange(treeview))
@@ -997,15 +1032,15 @@ class mainUserInterface(tk.Frame):
         global cbb_corpusMeasure_pos8type
 
         # frame
-        frm_corpusMeasure = ttk.LabelFrame(master = frm_mainMiddle, text = dataHandler.lang_frmCorpusMeasure, style = "Bold.TLabelframe")
+        frm_corpusMeasure = ttk.LabelFrame(master = frm_mainMiddle, text = dataHandler.dict_lang["lang_frmCorpusMeasure"], style = "Bold.TLabelframe")
         frm_corpusMeasure.grid(row = 0, column = 0, padx = 5, pady = (0, 2))
 
         # label
-        lbl_corpusMeasure_position = ttk.Label(master = frm_corpusMeasure, text = dataHandler.lang_general_position)
-        lbl_corpusMeasure_length = ttk.Label(master = frm_corpusMeasure, text = dataHandler.lang_general_length)
-        lbl_corpusMeasure_width = ttk.Label(master = frm_corpusMeasure, text = dataHandler.lang_general_width)
-        lbl_corpusMeasure_count = ttk.Label(master = frm_corpusMeasure, text = dataHandler.lang_general_count)
-        lbl_corpusMeasure_type = ttk.Label(master = frm_corpusMeasure, text = dataHandler.lang_general_type)
+        lbl_corpusMeasure_position = ttk.Label(master = frm_corpusMeasure, text = dataHandler.dict_lang["lang_general_position"])
+        lbl_corpusMeasure_length = ttk.Label(master = frm_corpusMeasure, text = dataHandler.dict_lang["lang_general_length"])
+        lbl_corpusMeasure_width = ttk.Label(master = frm_corpusMeasure, text = dataHandler.dict_lang["lang_general_width"])
+        lbl_corpusMeasure_count = ttk.Label(master = frm_corpusMeasure, text = dataHandler.dict_lang["lang_general_count"])
+        lbl_corpusMeasure_type = ttk.Label(master = frm_corpusMeasure, text = dataHandler.dict_lang["lang_general_type"])
         lbl_corpusMeasure_pos1 = ttk.Label(master = frm_corpusMeasure, text = "1")
         lbl_corpusMeasure_pos2 = ttk.Label(master = frm_corpusMeasure, text = "2")
         lbl_corpusMeasure_pos3 = ttk.Label(master = frm_corpusMeasure, text = "3")
@@ -1056,7 +1091,7 @@ class mainUserInterface(tk.Frame):
         cbb_corpusMeasure_pos6type = ttk.Combobox(master = frm_corpusMeasure, width = 8, state = "readonly")
         cbb_corpusMeasure_pos7type = ttk.Combobox(master = frm_corpusMeasure, width = 8, state = "readonly")
         cbb_corpusMeasure_pos8type = ttk.Combobox(master = frm_corpusMeasure, width = 8, state = "readonly")
-        cbt_corpusMeasure_override = ttk.Checkbutton(master = frm_corpusMeasure, text = dataHandler.lang_general_override, variable = cbt_corpusMeasure_overrideVar, command = self.updateDependencies)
+        cbt_corpusMeasure_override = ttk.Checkbutton(master = frm_corpusMeasure, text = dataHandler.dict_lang["lang_general_override"], variable = cbt_corpusMeasure_overrideVar, command = self.updateDependencies)
 
         # entry validation
         ety_corpusMeasure_pos1length.configure(validatecommand = (ety_corpusMeasure_pos1length.register(self.validateEntryInput), "%P", "%d"))
@@ -1182,15 +1217,15 @@ class mainUserInterface(tk.Frame):
         global cbb_glassMeasure_pos8type
 
         # frame
-        frm_glassMeasure = ttk.LabelFrame(master = frm_mainMiddle, text = dataHandler.lang_frmGlassMeasure, style = "Bold.TLabelframe")
+        frm_glassMeasure = ttk.LabelFrame(master = frm_mainMiddle, text = dataHandler.dict_lang["lang_frmGlassMeasure"], style = "Bold.TLabelframe")
         frm_glassMeasure.grid(row = 1, column = 0, padx = 5, pady = (0, 3))
 
         # label
-        lbl_glassMeasure_position = ttk.Label(master = frm_glassMeasure, text = dataHandler.lang_general_position)
-        lbl_glassMeasure_length = ttk.Label(master = frm_glassMeasure, text = dataHandler.lang_general_length)
-        lbl_glassMeasure_width = ttk.Label(master = frm_glassMeasure, text = dataHandler.lang_general_width)
-        lbl_glassMeasure_count = ttk.Label(master = frm_glassMeasure, text = dataHandler.lang_general_count)
-        lbl_glassMeasure_type = ttk.Label(master = frm_glassMeasure, text = dataHandler.lang_general_type)
+        lbl_glassMeasure_position = ttk.Label(master = frm_glassMeasure, text = dataHandler.dict_lang["lang_general_position"])
+        lbl_glassMeasure_length = ttk.Label(master = frm_glassMeasure, text = dataHandler.dict_lang["lang_general_length"])
+        lbl_glassMeasure_width = ttk.Label(master = frm_glassMeasure, text = dataHandler.dict_lang["lang_general_width"])
+        lbl_glassMeasure_count = ttk.Label(master = frm_glassMeasure, text = dataHandler.dict_lang["lang_general_count"])
+        lbl_glassMeasure_type = ttk.Label(master = frm_glassMeasure, text = dataHandler.dict_lang["lang_general_type"])
         lbl_glassMeasure_pos1 = ttk.Label(master = frm_glassMeasure, text = "1")
         lbl_glassMeasure_pos2 = ttk.Label(master = frm_glassMeasure, text = "2")
         lbl_glassMeasure_pos3 = ttk.Label(master = frm_glassMeasure, text = "3")
@@ -1241,7 +1276,7 @@ class mainUserInterface(tk.Frame):
         cbb_glassMeasure_pos6type = ttk.Combobox(master = frm_glassMeasure, width = 8, state = "readonly")
         cbb_glassMeasure_pos7type = ttk.Combobox(master = frm_glassMeasure, width = 8, state = "readonly")
         cbb_glassMeasure_pos8type = ttk.Combobox(master = frm_glassMeasure, width = 8, state = "readonly")
-        cbt_glassMeasure_override = ttk.Checkbutton(master = frm_glassMeasure, text = dataHandler.lang_general_override, variable = cbt_glassMeasure_overrideVar, command = self.updateDependencies)
+        cbt_glassMeasure_override = ttk.Checkbutton(master = frm_glassMeasure, text = dataHandler.dict_lang["lang_general_override"], variable = cbt_glassMeasure_overrideVar, command = self.updateDependencies)
         
         # entry validation
         ety_glassMeasure_pos1length.configure(validatecommand = (ety_glassMeasure_pos1length.register(self.validateEntryInput), "%P", "%d"))
@@ -1337,19 +1372,19 @@ class mainUserInterface(tk.Frame):
         global ety_packaging_depth
 
         # frame
-        frm_packaging = ttk.LabelFrame(master = frm_mainMiddle, text = dataHandler.lang_frmPackaging, style = "Bold.TLabelframe")
+        frm_packaging = ttk.LabelFrame(master = frm_mainMiddle, text = dataHandler.dict_lang["lang_frmPackaging"], style = "Bold.TLabelframe")
         frm_packaging.grid(row = 3, column = 0, sticky = "we", padx = 5, pady = 2)
 
         # label
-        lbl_packaging_width = ttk.Label(master = frm_packaging, text = dataHandler.lang_general_width)
-        lbl_packaging_height = ttk.Label(master = frm_packaging, text = dataHandler.lang_general_height)
-        lbl_packaging_depth = ttk.Label(master = frm_packaging, text = dataHandler.lang_general_depth)
+        lbl_packaging_width = ttk.Label(master = frm_packaging, text = dataHandler.dict_lang["lang_general_width"])
+        lbl_packaging_height = ttk.Label(master = frm_packaging, text = dataHandler.dict_lang["lang_general_height"])
+        lbl_packaging_depth = ttk.Label(master = frm_packaging, text = dataHandler.dict_lang["lang_general_depth"])
 
         # input
         ety_packaging_width = ttk.Entry(master = frm_packaging, width = 14, textvariable = ety_packaging_widthVar, validate = "key", justify = "center")
         ety_packaging_height = ttk.Entry(master = frm_packaging, width = 14, textvariable = ety_packaging_heightVar, validate = "key", justify = "center")
         ety_packaging_depth = ttk.Entry(master = frm_packaging, width = 14, textvariable = ety_packaging_depthVar, validate = "key", justify = "center")
-        cbt_packaging_override = ttk.Checkbutton(master = frm_packaging, text = dataHandler.lang_general_override, variable = cbt_packaging_overrideVar, command = self.updateDependencies)
+        cbt_packaging_override = ttk.Checkbutton(master = frm_packaging, text = dataHandler.dict_lang["lang_general_override"], variable = cbt_packaging_overrideVar, command = self.updateDependencies)
                 
         # entry validation
         ety_packaging_width.configure(validatecommand = (ety_packaging_width.register(self.validateEntryInput), "%P", "%d"))
@@ -1375,7 +1410,7 @@ class mainUserInterface(tk.Frame):
         global txt_infoBox
 
         # frame
-        frm_infoBox = ttk.LabelFrame(master = frm_mainRight, text = dataHandler.lang_frmInfo, style = "Bold.TLabelframe")
+        frm_infoBox = ttk.LabelFrame(master = frm_mainRight, text = dataHandler.dict_lang["lang_frmInfo"], style = "Bold.TLabelframe")
         frm_infoBox.grid(row = 0, column = 0, padx = 5, pady = 0)
 
         # input
@@ -1393,12 +1428,12 @@ class mainUserInterface(tk.Frame):
         frm_buttons.grid(row = 1, column = 0, pady = 5)
 
         # buttons
-        btn_calculate = ttk.Button(master = frm_buttons, text = dataHandler.lang_button_calc, width = 29, command = self.btn_calculate_callback)
-        btn_reset = ttk.Button(master = frm_buttons, text = dataHandler.lang_button_reset, width = 29, command = self.btn_reset_callback)
-        btn_create = ttk.Button(master = frm_buttons, text = dataHandler.lang_button_create, width = 29, command = self.btn_create_callback)
-        btn_load = ttk.Button(master = frm_buttons, text = dataHandler.lang_button_load, width = 29, command = self.btn_load_callback)
-        btn_settings = ttk.Button(master = frm_buttons, text = dataHandler.lang_button_settings, width = 29, command = self.btn_settings_callback)
-        btn_quit = ttk.Button(master = frm_buttons, text = dataHandler.lang_button_quit, width = 29, command = self.btn_quit_callback)
+        btn_calculate = ttk.Button(master = frm_buttons, text = dataHandler.dict_lang["lang_button_calc"], width = 29, command = self.btn_calculate_callback)
+        btn_reset = ttk.Button(master = frm_buttons, text = dataHandler.dict_lang["lang_button_reset"], width = 29, command = self.btn_reset_callback)
+        btn_create = ttk.Button(master = frm_buttons, text = dataHandler.dict_lang["lang_button_create"], width = 29, command = self.btn_create_callback)
+        btn_load = ttk.Button(master = frm_buttons, text = dataHandler.dict_lang["lang_button_load"], width = 29, command = self.btn_load_callback)
+        btn_settings = ttk.Button(master = frm_buttons, text = dataHandler.dict_lang["lang_button_settings"], width = 29, command = self.btn_settings_callback)
+        btn_quit = ttk.Button(master = frm_buttons, text = dataHandler.dict_lang["lang_button_quit"], width = 29, command = self.btn_quit_callback)
 
         # buttons grid
         btn_calculate.grid(row = 1, column = 0, padx = 1, pady = 1)
@@ -1437,17 +1472,17 @@ class mainUserInterface(tk.Frame):
 
         # general info
 
-        lbl_genInfo_orderID.bind                ("<Enter>", lambda event, id = 1: self.tooltip(tooltipID = id))
-        lbl_genInfo_date.bind                   ("<Enter>", lambda event, id = 2: self.tooltip(tooltipID = id))
-        lbl_genInfo_type.bind                   ("<Enter>", lambda event, id = 3: self.tooltip(tooltipID = id))
-        lbl_genInfo_pto.bind                    ("<Enter>", lambda event, id = 4: self.tooltip(tooltipID = id))
-        lbl_genInfo_specials.bind               ("<Enter>", lambda event, id = 5: self.tooltip(tooltipID = id))
+        lbl_genInfo_orderID.bind                ("<Enter>", lambda event, id = 1: self.tooltip(tooltipID = "tool_genInfo_orderID"))
+        lbl_genInfo_date.bind                   ("<Enter>", lambda event, id = 2: self.tooltip(tooltipID = "tool_genInfo_date"))
+        lbl_genInfo_type.bind                   ("<Enter>", lambda event, id = 3: self.tooltip(tooltipID = "tool_genInfo_type"))
+        lbl_genInfo_pto.bind                    ("<Enter>", lambda event, id = 4: self.tooltip(tooltipID = "tool_genInfo_pto"))
+        lbl_genInfo_specials.bind               ("<Enter>", lambda event, id = 5: self.tooltip(tooltipID = "tool_genInfo_specials"))
         
-        ety_genInfo_orderID.bind                ("<Enter>", lambda event, id = 1: self.tooltip(tooltipID = id))
-        ety_genInfo_date.bind                   ("<Enter>", lambda event, id = 2: self.tooltip(tooltipID = id))
-        cbb_genInfo_type.bind                   ("<Enter>", lambda event, id = 3: self.tooltip(tooltipID = id))
-        cbt_genInfo_pto.bind                    ("<Enter>", lambda event, id = 4: self.tooltip(tooltipID = id))
-        cbb_genInfo_specials.bind               ("<Enter>", lambda event, id = 5: self.tooltip(tooltipID = id))
+        ety_genInfo_orderID.bind                ("<Enter>", lambda event, id = 1: self.tooltip(tooltipID = "tool_genInfo_orderID"))
+        ety_genInfo_date.bind                   ("<Enter>", lambda event, id = 2: self.tooltip(tooltipID = "tool_genInfo_date"))
+        cbb_genInfo_type.bind                   ("<Enter>", lambda event, id = 3: self.tooltip(tooltipID = "tool_genInfo_type"))
+        cbt_genInfo_pto.bind                    ("<Enter>", lambda event, id = 4: self.tooltip(tooltipID = "tool_genInfo_pto"))
+        cbb_genInfo_specials.bind               ("<Enter>", lambda event, id = 5: self.tooltip(tooltipID = "tool_genInfo_specials"))
 
         lbl_genInfo_orderID.bind                ("<Leave>", lambda event, hide = True: self.tooltip(hideTooltip = hide))
         lbl_genInfo_date.bind                   ("<Leave>", lambda event, hide = True: self.tooltip(hideTooltip = hide))
@@ -1463,13 +1498,13 @@ class mainUserInterface(tk.Frame):
 
         # measure
 
-        lbl_measure_width.bind                  ("<Enter>", lambda event, id = 6: self.tooltip(tooltipID = id))
-        lbl_measure_height.bind                 ("<Enter>", lambda event, id = 7: self.tooltip(tooltipID = id))
-        lbl_measure_depth.bind                  ("<Enter>", lambda event, id = 8: self.tooltip(tooltipID = id))
+        lbl_measure_width.bind                  ("<Enter>", lambda event, id = 6: self.tooltip(tooltipID = "tool_measure_width"))
+        lbl_measure_height.bind                 ("<Enter>", lambda event, id = 7: self.tooltip(tooltipID = "tool_measure_height"))
+        lbl_measure_depth.bind                  ("<Enter>", lambda event, id = 8: self.tooltip(tooltipID = "tool_measure_depth"))
 
-        ety_measure_width.bind                  ("<Enter>", lambda event, id = 6: self.tooltip(tooltipID = id))
-        ety_measure_height.bind                 ("<Enter>", lambda event, id = 7: self.tooltip(tooltipID = id))
-        ety_measure_depth.bind                  ("<Enter>", lambda event, id = 8: self.tooltip(tooltipID = id))
+        ety_measure_width.bind                  ("<Enter>", lambda event, id = 6: self.tooltip(tooltipID = "tool_measure_width"))
+        ety_measure_height.bind                 ("<Enter>", lambda event, id = 7: self.tooltip(tooltipID = "tool_measure_height"))
+        ety_measure_depth.bind                  ("<Enter>", lambda event, id = 8: self.tooltip(tooltipID = "tool_measure_depth"))
 
         lbl_measure_width.bind                  ("<Leave>", lambda event, hide = True: self.tooltip(hideTooltip = hide))
         lbl_measure_height.bind                 ("<Leave>", lambda event, hide = True: self.tooltip(hideTooltip = hide))
@@ -1481,19 +1516,19 @@ class mainUserInterface(tk.Frame):
 
         # corpus info
 
-        lbl_corInfo_light.bind                  ("<Enter>", lambda event, id = 9: self.tooltip(tooltipID = id))
-        lbl_corInfo_indLight.bind               ("<Enter>", lambda event, id = 10: self.tooltip(tooltipID = id))
-        lbl_corInfo_door.bind                   ("<Enter>", lambda event, id = 11: self.tooltip(tooltipID = id))
-        lbl_corInfo_shelf.bind                  ("<Enter>", lambda event, id = 12: self.tooltip(tooltipID = id))
-        lbl_corInfo_overhangUpper.bind          ("<Enter>", lambda event, id = 13: self.tooltip(tooltipID = id))
-        lbl_corInfo_overhangLower.bind          ("<Enter>", lambda event, id = 14: self.tooltip(tooltipID = id))
+        lbl_corInfo_light.bind                  ("<Enter>", lambda event, id = 9: self.tooltip(tooltipID = "tool_corInfo_light"))
+        lbl_corInfo_indLight.bind               ("<Enter>", lambda event, id = 10: self.tooltip(tooltipID = "tool_corInfo_indLight"))
+        lbl_corInfo_door.bind                   ("<Enter>", lambda event, id = 11: self.tooltip(tooltipID = "tool_corInfo_doors"))
+        lbl_corInfo_shelf.bind                  ("<Enter>", lambda event, id = 12: self.tooltip(tooltipID = "tool_corInfo_shelfs"))
+        lbl_corInfo_overhangUpper.bind          ("<Enter>", lambda event, id = 13: self.tooltip(tooltipID = "tool_corInfo_overhangUpper"))
+        lbl_corInfo_overhangLower.bind          ("<Enter>", lambda event, id = 14: self.tooltip(tooltipID = "tool_corInfo_overhangLower"))
 
-        cbb_corInfo_light.bind                  ("<Enter>", lambda event, id = 9: self.tooltip(tooltipID = id))
-        cbt_corInfo_indLight.bind               ("<Enter>", lambda event, id = 10: self.tooltip(tooltipID = id))
-        ety_corInfo_door.bind                   ("<Enter>", lambda event, id = 11: self.tooltip(tooltipID = id))
-        ety_corInfo_shelf.bind                  ("<Enter>", lambda event, id = 12: self.tooltip(tooltipID = id))
-        ety_corInfo_overhangUpper.bind          ("<Enter>", lambda event, id = 13: self.tooltip(tooltipID = id))
-        ety_corInfo_overhangLower.bind          ("<Enter>", lambda event, id = 14: self.tooltip(tooltipID = id))
+        cbb_corInfo_light.bind                  ("<Enter>", lambda event, id = 9: self.tooltip(tooltipID = "tool_corInfo_light"))
+        cbt_corInfo_indLight.bind               ("<Enter>", lambda event, id = 10: self.tooltip(tooltipID = "tool_corInfo_indLight"))
+        ety_corInfo_door.bind                   ("<Enter>", lambda event, id = 11: self.tooltip(tooltipID = "tool_corInfo_doors"))
+        ety_corInfo_shelf.bind                  ("<Enter>", lambda event, id = 12: self.tooltip(tooltipID = "tool_corInfo_shelfs"))
+        ety_corInfo_overhangUpper.bind          ("<Enter>", lambda event, id = 13: self.tooltip(tooltipID = "tool_corInfo_overhangUpper"))
+        ety_corInfo_overhangLower.bind          ("<Enter>", lambda event, id = 14: self.tooltip(tooltipID = "tool_corInfo_overhangLower"))
 
         lbl_corInfo_light.bind                  ("<Leave>", lambda event, hide = True: self.tooltip(hideTooltip = hide))
         lbl_corInfo_indLight.bind               ("<Leave>", lambda event, hide = True: self.tooltip(hideTooltip = hide))
@@ -1511,13 +1546,13 @@ class mainUserInterface(tk.Frame):
 
         # extra space
 
-        lbl_extra_type.bind                     ("<Enter>", lambda event, id = 15: self.tooltip(tooltipID = id))
-        lbl_extra_measure.bind                  ("<Enter>", lambda event, id = 16: self.tooltip(tooltipID = id))
-        lbl_extra_covered.bind                  ("<Enter>", lambda event, id = 17: self.tooltip(tooltipID = id))
+        lbl_extra_type.bind                     ("<Enter>", lambda event, id = 15: self.tooltip(tooltipID = "tool_extra_type"))
+        lbl_extra_measure.bind                  ("<Enter>", lambda event, id = 16: self.tooltip(tooltipID = "tool_extra_measure"))
+        lbl_extra_covered.bind                  ("<Enter>", lambda event, id = 17: self.tooltip(tooltipID = "tool_extra_covered"))
 
-        cbb_extra_type.bind                     ("<Enter>", lambda event, id = 15: self.tooltip(tooltipID = id))
-        ety_extra_measure.bind                  ("<Enter>", lambda event, id = 16: self.tooltip(tooltipID = id))
-        cbt_extra_covered.bind                  ("<Enter>", lambda event, id = 17: self.tooltip(tooltipID = id))
+        cbb_extra_type.bind                     ("<Enter>", lambda event, id = 15: self.tooltip(tooltipID = "tool_extra_type"))
+        ety_extra_measure.bind                  ("<Enter>", lambda event, id = 16: self.tooltip(tooltipID = "tool_extra_measure"))
+        cbt_extra_covered.bind                  ("<Enter>", lambda event, id = 17: self.tooltip(tooltipID = "tool_extra_covered"))
 
         lbl_extra_type.bind                     ("<Leave>", lambda event, hide = True: self.tooltip(hideTooltip = hide))
         lbl_extra_measure.bind                  ("<Leave>", lambda event, hide = True: self.tooltip(hideTooltip = hide))
@@ -1529,69 +1564,69 @@ class mainUserInterface(tk.Frame):
 
         # color
 
-        ntb_colorcode.bind                      ("<Enter>", lambda event, id = 18: self.tooltip(tooltipID = id))
-        ety_color_selected.bind                 ("<Enter>", lambda event, id = 19: self.tooltip(tooltipID = id))
+        ntb_colorcode.bind                      ("<Enter>", lambda event, id = 18: self.tooltip(tooltipID = "tool_color_select"))
+        ety_color_selected.bind                 ("<Enter>", lambda event, id = 19: self.tooltip(tooltipID = "tool_color_showSelected"))
 
         ntb_colorcode.bind                      ("<Leave>", lambda event, hide = True: self.tooltip(hideTooltip = hide))
         ety_color_selected.bind                 ("<Leave>", lambda event, hide = True: self.tooltip(hideTooltip = hide))
 
         # corpus measurements
 
-        lbl_corpusMeasure_pos1.bind             ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        lbl_corpusMeasure_pos2.bind             ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        lbl_corpusMeasure_pos3.bind             ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        lbl_corpusMeasure_pos4.bind             ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        lbl_corpusMeasure_pos5.bind             ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        lbl_corpusMeasure_pos6.bind             ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        lbl_corpusMeasure_pos7.bind             ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        lbl_corpusMeasure_pos8.bind             ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
+        lbl_corpusMeasure_pos1.bind             ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        lbl_corpusMeasure_pos2.bind             ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        lbl_corpusMeasure_pos3.bind             ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        lbl_corpusMeasure_pos4.bind             ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        lbl_corpusMeasure_pos5.bind             ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        lbl_corpusMeasure_pos6.bind             ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        lbl_corpusMeasure_pos7.bind             ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        lbl_corpusMeasure_pos8.bind             ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
 
-        lbl_corpusMeasure_pos1separator.bind    ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        lbl_corpusMeasure_pos2separator.bind    ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        lbl_corpusMeasure_pos3separator.bind    ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        lbl_corpusMeasure_pos4separator.bind    ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        lbl_corpusMeasure_pos5separator.bind    ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        lbl_corpusMeasure_pos6separator.bind    ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        lbl_corpusMeasure_pos7separator.bind    ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        lbl_corpusMeasure_pos8separator.bind    ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
+        lbl_corpusMeasure_pos1separator.bind    ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        lbl_corpusMeasure_pos2separator.bind    ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        lbl_corpusMeasure_pos3separator.bind    ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        lbl_corpusMeasure_pos4separator.bind    ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        lbl_corpusMeasure_pos5separator.bind    ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        lbl_corpusMeasure_pos6separator.bind    ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        lbl_corpusMeasure_pos7separator.bind    ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        lbl_corpusMeasure_pos8separator.bind    ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
 
-        ety_corpusMeasure_pos1length.bind       ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        ety_corpusMeasure_pos2length.bind       ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        ety_corpusMeasure_pos3length.bind       ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        ety_corpusMeasure_pos4length.bind       ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        ety_corpusMeasure_pos5length.bind       ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        ety_corpusMeasure_pos6length.bind       ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        ety_corpusMeasure_pos7length.bind       ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        ety_corpusMeasure_pos8length.bind       ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
+        ety_corpusMeasure_pos1length.bind       ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        ety_corpusMeasure_pos2length.bind       ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        ety_corpusMeasure_pos3length.bind       ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        ety_corpusMeasure_pos4length.bind       ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        ety_corpusMeasure_pos5length.bind       ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        ety_corpusMeasure_pos6length.bind       ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        ety_corpusMeasure_pos7length.bind       ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        ety_corpusMeasure_pos8length.bind       ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
 
-        ety_corpusMeasure_pos1width.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        ety_corpusMeasure_pos2width.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        ety_corpusMeasure_pos3width.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        ety_corpusMeasure_pos4width.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        ety_corpusMeasure_pos5width.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        ety_corpusMeasure_pos6width.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        ety_corpusMeasure_pos7width.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        ety_corpusMeasure_pos8width.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
+        ety_corpusMeasure_pos1width.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        ety_corpusMeasure_pos2width.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        ety_corpusMeasure_pos3width.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        ety_corpusMeasure_pos4width.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        ety_corpusMeasure_pos5width.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        ety_corpusMeasure_pos6width.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        ety_corpusMeasure_pos7width.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        ety_corpusMeasure_pos8width.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
 
-        ety_corpusMeasure_pos1count.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        ety_corpusMeasure_pos2count.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        ety_corpusMeasure_pos3count.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        ety_corpusMeasure_pos4count.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        ety_corpusMeasure_pos5count.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        ety_corpusMeasure_pos6count.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        ety_corpusMeasure_pos7count.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        ety_corpusMeasure_pos8count.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
+        ety_corpusMeasure_pos1count.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        ety_corpusMeasure_pos2count.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        ety_corpusMeasure_pos3count.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        ety_corpusMeasure_pos4count.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        ety_corpusMeasure_pos5count.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        ety_corpusMeasure_pos6count.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        ety_corpusMeasure_pos7count.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        ety_corpusMeasure_pos8count.bind        ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
 
-        cbb_corpusMeasure_pos1type.bind         ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        cbb_corpusMeasure_pos2type.bind         ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        cbb_corpusMeasure_pos3type.bind         ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        cbb_corpusMeasure_pos4type.bind         ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        cbb_corpusMeasure_pos5type.bind         ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        cbb_corpusMeasure_pos6type.bind         ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        cbb_corpusMeasure_pos7type.bind         ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
-        cbb_corpusMeasure_pos8type.bind         ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = id))
+        cbb_corpusMeasure_pos1type.bind         ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        cbb_corpusMeasure_pos2type.bind         ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        cbb_corpusMeasure_pos3type.bind         ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        cbb_corpusMeasure_pos4type.bind         ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        cbb_corpusMeasure_pos5type.bind         ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        cbb_corpusMeasure_pos6type.bind         ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        cbb_corpusMeasure_pos7type.bind         ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
+        cbb_corpusMeasure_pos8type.bind         ("<Enter>", lambda event, id = 20: self.tooltip(tooltipID = "tool_corpusMeasurement"))
 
-        cbt_corpusMeasure_override.bind         ("<Enter>", lambda event, id = 31: self.tooltip(tooltipID = id))
+        cbt_corpusMeasure_override.bind         ("<Enter>", lambda event, id = 31: self.tooltip(tooltipID = "tool_other_override"))
 
         lbl_corpusMeasure_pos1.bind             ("<Leave>", lambda event, hide = True: self.tooltip(hideTooltip = hide))
         lbl_corpusMeasure_pos2.bind             ("<Leave>", lambda event, hide = True: self.tooltip(hideTooltip = hide))
@@ -1651,61 +1686,61 @@ class mainUserInterface(tk.Frame):
 
         # glass measurements
 
-        lbl_glassMeasure_pos1.bind              ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        lbl_glassMeasure_pos2.bind              ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        lbl_glassMeasure_pos3.bind              ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        lbl_glassMeasure_pos4.bind              ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        lbl_glassMeasure_pos5.bind              ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        lbl_glassMeasure_pos6.bind              ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        lbl_glassMeasure_pos7.bind              ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        lbl_glassMeasure_pos8.bind              ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
+        lbl_glassMeasure_pos1.bind              ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        lbl_glassMeasure_pos2.bind              ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        lbl_glassMeasure_pos3.bind              ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        lbl_glassMeasure_pos4.bind              ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        lbl_glassMeasure_pos5.bind              ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        lbl_glassMeasure_pos6.bind              ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        lbl_glassMeasure_pos7.bind              ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        lbl_glassMeasure_pos8.bind              ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
 
-        lbl_glassMeasure_pos1separator.bind     ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        lbl_glassMeasure_pos2separator.bind     ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        lbl_glassMeasure_pos3separator.bind     ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        lbl_glassMeasure_pos4separator.bind     ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        lbl_glassMeasure_pos5separator.bind     ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        lbl_glassMeasure_pos6separator.bind     ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        lbl_glassMeasure_pos7separator.bind     ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        lbl_glassMeasure_pos8separator.bind     ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
+        lbl_glassMeasure_pos1separator.bind     ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        lbl_glassMeasure_pos2separator.bind     ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        lbl_glassMeasure_pos3separator.bind     ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        lbl_glassMeasure_pos4separator.bind     ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        lbl_glassMeasure_pos5separator.bind     ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        lbl_glassMeasure_pos6separator.bind     ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        lbl_glassMeasure_pos7separator.bind     ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        lbl_glassMeasure_pos8separator.bind     ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
 
-        ety_glassMeasure_pos1length.bind        ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        ety_glassMeasure_pos2length.bind        ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        ety_glassMeasure_pos3length.bind        ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        ety_glassMeasure_pos4length.bind        ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        ety_glassMeasure_pos5length.bind        ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        ety_glassMeasure_pos6length.bind        ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        ety_glassMeasure_pos7length.bind        ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        ety_glassMeasure_pos8length.bind        ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
+        ety_glassMeasure_pos1length.bind        ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        ety_glassMeasure_pos2length.bind        ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        ety_glassMeasure_pos3length.bind        ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        ety_glassMeasure_pos4length.bind        ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        ety_glassMeasure_pos5length.bind        ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        ety_glassMeasure_pos6length.bind        ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        ety_glassMeasure_pos7length.bind        ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        ety_glassMeasure_pos8length.bind        ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
 
-        ety_glassMeasure_pos1width.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        ety_glassMeasure_pos2width.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        ety_glassMeasure_pos3width.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        ety_glassMeasure_pos4width.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        ety_glassMeasure_pos5width.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        ety_glassMeasure_pos6width.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        ety_glassMeasure_pos7width.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        ety_glassMeasure_pos8width.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
+        ety_glassMeasure_pos1width.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        ety_glassMeasure_pos2width.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        ety_glassMeasure_pos3width.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        ety_glassMeasure_pos4width.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        ety_glassMeasure_pos5width.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        ety_glassMeasure_pos6width.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        ety_glassMeasure_pos7width.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        ety_glassMeasure_pos8width.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
 
-        ety_glassMeasure_pos1count.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        ety_glassMeasure_pos2count.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        ety_glassMeasure_pos3count.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        ety_glassMeasure_pos4count.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        ety_glassMeasure_pos5count.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        ety_glassMeasure_pos6count.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        ety_glassMeasure_pos7count.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        ety_glassMeasure_pos8count.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
+        ety_glassMeasure_pos1count.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        ety_glassMeasure_pos2count.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        ety_glassMeasure_pos3count.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        ety_glassMeasure_pos4count.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        ety_glassMeasure_pos5count.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        ety_glassMeasure_pos6count.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        ety_glassMeasure_pos7count.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        ety_glassMeasure_pos8count.bind         ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
 
-        cbb_glassMeasure_pos1type.bind          ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        cbb_glassMeasure_pos2type.bind          ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        cbb_glassMeasure_pos3type.bind          ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        cbb_glassMeasure_pos4type.bind          ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        cbb_glassMeasure_pos5type.bind          ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        cbb_glassMeasure_pos6type.bind          ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        cbb_glassMeasure_pos7type.bind          ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
-        cbb_glassMeasure_pos8type.bind          ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = id))
+        cbb_glassMeasure_pos1type.bind          ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        cbb_glassMeasure_pos2type.bind          ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        cbb_glassMeasure_pos3type.bind          ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        cbb_glassMeasure_pos4type.bind          ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        cbb_glassMeasure_pos5type.bind          ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        cbb_glassMeasure_pos6type.bind          ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        cbb_glassMeasure_pos7type.bind          ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
+        cbb_glassMeasure_pos8type.bind          ("<Enter>", lambda event, id = 21: self.tooltip(tooltipID = "tool_glassMeasurement"))
 
-        cbt_glassMeasure_override.bind          ("<Enter>", lambda event, id = 31: self.tooltip(tooltipID = id))
+        cbt_glassMeasure_override.bind          ("<Enter>", lambda event, id = 31: self.tooltip(tooltipID = "tool_other_override"))
 
         lbl_glassMeasure_pos1.bind              ("<Leave>", lambda event, hide = True: self.tooltip(hideTooltip = hide))
         lbl_glassMeasure_pos2.bind              ("<Leave>", lambda event, hide = True: self.tooltip(hideTooltip = hide))
@@ -1765,15 +1800,15 @@ class mainUserInterface(tk.Frame):
 
         # packaging
 
-        lbl_packaging_width.bind                ("<Enter>", lambda event, id = 22: self.tooltip(tooltipID = id))
-        lbl_packaging_height.bind               ("<Enter>", lambda event, id = 23: self.tooltip(tooltipID = id))
-        lbl_packaging_depth.bind                ("<Enter>", lambda event, id = 24: self.tooltip(tooltipID = id))
+        lbl_packaging_width.bind                ("<Enter>", lambda event, id = 22: self.tooltip(tooltipID = "tool_packaging_width"))
+        lbl_packaging_height.bind               ("<Enter>", lambda event, id = 23: self.tooltip(tooltipID = "tool_packaging_height"))
+        lbl_packaging_depth.bind                ("<Enter>", lambda event, id = 24: self.tooltip(tooltipID = "tool_packaging_depth"))
 
-        ety_packaging_width.bind                ("<Enter>", lambda event, id = 22: self.tooltip(tooltipID = id))
-        ety_packaging_height.bind               ("<Enter>", lambda event, id = 23: self.tooltip(tooltipID = id))
-        ety_packaging_depth.bind                ("<Enter>", lambda event, id = 24: self.tooltip(tooltipID = id))
+        ety_packaging_width.bind                ("<Enter>", lambda event, id = 22: self.tooltip(tooltipID = "tool_packaging_width"))
+        ety_packaging_height.bind               ("<Enter>", lambda event, id = 23: self.tooltip(tooltipID = "tool_packaging_height"))
+        ety_packaging_depth.bind                ("<Enter>", lambda event, id = 24: self.tooltip(tooltipID = "tool_packaging_depth"))
 
-        cbt_packaging_override.bind             ("<Enter>", lambda event, id = 31: self.tooltip(tooltipID = id))
+        cbt_packaging_override.bind             ("<Enter>", lambda event, id = 31: self.tooltip(tooltipID = "tool_other_override"))
 
         lbl_packaging_width.bind                ("<Leave>", lambda event, hide = True: self.tooltip(hideTooltip = hide))
         lbl_packaging_height.bind               ("<Leave>", lambda event, hide = True: self.tooltip(hideTooltip = hide))
@@ -1787,18 +1822,18 @@ class mainUserInterface(tk.Frame):
 
         # text box
 
-        txt_infoBox.bind                        ("<Enter>", lambda event, id = 32: self.tooltip(tooltipID = id))
+        txt_infoBox.bind                        ("<Enter>", lambda event, id = 32: self.tooltip(tooltipID = "tool_textbox"))
 
         txt_infoBox.bind                        ("<Leave>", lambda event, hide = True: self.tooltip(hideTooltip = hide))
 
         # buttons
 
-        btn_calculate.bind                      ("<Enter>", lambda event, id = 25: self.tooltip(tooltipID = id))
-        btn_reset.bind                          ("<Enter>", lambda event, id = 26: self.tooltip(tooltipID = id))
-        btn_create.bind                         ("<Enter>", lambda event, id = 27: self.tooltip(tooltipID = id))
-        btn_load.bind                           ("<Enter>", lambda event, id = 28: self.tooltip(tooltipID = id))
-        btn_settings.bind                       ("<Enter>", lambda event, id = 29: self.tooltip(tooltipID = id))
-        btn_quit.bind                           ("<Enter>", lambda event, id = 30: self.tooltip(tooltipID = id))
+        btn_calculate.bind                      ("<Enter>", lambda event, id = 25: self.tooltip(tooltipID = "tool_buttons_calc"))
+        btn_reset.bind                          ("<Enter>", lambda event, id = 26: self.tooltip(tooltipID = "tool_buttons_reset"))
+        btn_create.bind                         ("<Enter>", lambda event, id = 27: self.tooltip(tooltipID = "tool_buttons_create"))
+        btn_load.bind                           ("<Enter>", lambda event, id = 28: self.tooltip(tooltipID = "tool_buttons_load"))
+        btn_settings.bind                       ("<Enter>", lambda event, id = 29: self.tooltip(tooltipID = "tool_buttons_settings"))
+        btn_quit.bind                           ("<Enter>", lambda event, id = 30: self.tooltip(tooltipID = "tool_buttons_quit"))
 
         btn_calculate.bind                      ("<Leave>", lambda event, hide = True: self.tooltip(hideTooltip = hide))
         btn_reset.bind                          ("<Leave>", lambda event, hide = True: self.tooltip(hideTooltip = hide))
@@ -1809,10 +1844,6 @@ class mainUserInterface(tk.Frame):
 
     def btn_calculate_callback(self):
 
-        if self.checkInputs() == False:
-
-            return
-
         self.calcMeasures()
 
     def btn_reset_callback(self):
@@ -1821,31 +1852,388 @@ class mainUserInterface(tk.Frame):
 
     def btn_create_callback(self):
 
-        if dataHandler.calculateBeforeCreate == True:
-
-            if self.checkInputs() == False:
-
-                return
-
-            if self.calcMeasures(True) == 1:
-
-                return
-
-        if dataHandler.createRCFile == True:
-
-            dataHandler.writeRCFile()
-
-        if fileHandler.createPDF() == True:
-
-            self.showInfo(dataHandler.lang_creation_success)
-
-        else:
-
-            self.showInfo(dataHandler.lang_creation_failed, False)
+        self.createPDF()
 
     def btn_load_callback(self):
 
-        loadFile = tkfile.askopenfilename(filetypes = [("RC-File", "*.rcf")])
+        self.loadRCFile()
+
+    def btn_settings_callback(self):
+
+        runSettingsInterface()
+
+    def btn_quit_callback(self):
+
+        self.closeWindow()
+
+    def calcMeasures(self, creationCalc = False):
+
+        if self.checkInputs() == False:
+
+            return
+
+        try:
+
+            doorAmount = int(ety_corInfo_doorVar.get())
+
+        except:
+
+            pass
+
+        if doorAmount >= 5:
+
+            if creationCalc == True:
+
+                feedback = tkmsg.askyesnocancel(title = dataHandler.titleVersion, message = dataHandler.dict_lang["lang_msg_doorAmountInvalid"])
+
+            else:
+
+                feedback = tkmsg.askyesno(title = dataHandler.titleVersion, message = dataHandler.dict_lang["lang_msg_doorAmountInvalid"])
+
+            if feedback == False:
+
+                return 0
+
+            elif feedback == None:
+
+                return 1
+
+        self.resetDefault(True)
+
+        if calcHandler.calculateCuttings(int(ety_measure_widthVar.get()), int(ety_measure_heightVar.get()), int(ety_measure_depthVar.get())) == True:
+
+            self.showInfo(dataHandler.dict_lang["lang_calc_success"])
+
+        else:
+
+            self.showInfo(dataHandler.dict_lang["lang_calc_failed"], False)
+
+    def notebookTabChange(self, notebook):
+        
+        global lastSelectedListbox
+
+        tabList = notebook.tabs()
+
+        for tab in tabList:
+
+            notebook.tab(tab, compound = "image")
+            notebook.tab(tab, sticky = "we")
+
+        activeTab = notebook.select()
+        notebook.tab(activeTab, compound = tk.LEFT)
+
+        activeIndex = notebook.index(activeTab)
+
+        if activeIndex == 0:
+
+            childList = tvw_ntbColor_aluminum.get_children()
+            tvw_ntbColor_aluminum.selection_set(childList[0])
+            tvw_ntbColor_aluminum.see(childList[0])
+
+        elif activeIndex == 1:
+
+            childList = tvw_ntbColor_unicolor.get_children()
+            tvw_ntbColor_unicolor.selection_set(childList[0])
+            tvw_ntbColor_unicolor.see(childList[0])
+
+        elif activeIndex == 2:
+
+            childList = tvw_ntbColor_wooden.get_children()
+            tvw_ntbColor_wooden.selection_set(childList[0])
+            tvw_ntbColor_wooden.see(childList[0])
+
+        elif activeIndex == 3:
+
+            childList = tvw_ntbColor_material.get_children()
+            tvw_ntbColor_material.selection_set(childList[0])
+            tvw_ntbColor_material.see(childList[0])
+        
+        lastSelectedListbox = activeIndex
+
+    def treeviewChange(self, treeview: ttk.Treeview):
+
+        global lastSelectedListboxItem
+
+        selection = treeview.selection()[0]
+
+        itemValues = treeview.item(selection)["values"]
+
+        color = itemValues[0] + " " + itemValues[1]
+        
+        ety_color_selectedVar.set(color)
+
+        lastSelectedListboxItem = selection
+
+    def fillTreeviewlists(self):
+
+        global codesAluminum
+        codesAluminum = []
+        codes = fileHandler.readFile(dataHandler.fPth_codesAluminum)
+
+        for line in codes:
+            if line[0] != "#":
+                content = line.split("#")
+                tvw_ntbColor_aluminum.insert("", tk.END, values = (content[0], content[1]))
+                codesAluminum.append((content[0], content[1]))
+
+        global codesUnicolor
+        codesUnicolor = []
+        codes = fileHandler.readFile(dataHandler.fPth_codesUnicolor)
+
+        for line in codes:
+            if line[0] != "#":
+                content = line.split("#")
+                tvw_ntbColor_unicolor.insert("", tk.END, values = (content[0], content[1]))
+                codesUnicolor.append((content[0], content[1]))
+
+        global codesWooden
+        codesWooden = []
+        codes = fileHandler.readFile(dataHandler.fPth_codesWood)
+        
+        for line in codes:
+            if line[0] != "#":
+                content = line.split("#")
+                tvw_ntbColor_wooden.insert("", tk.END, values = (content[0], content[1]))
+                codesWooden.append((content[0], content[1]))
+
+        global codesMaterial
+        codesMaterial = []
+        codes = fileHandler.readFile(dataHandler.fPth_codesMaterial)
+        
+        for line in codes:
+            if line[0] != "#":
+                content = line.split("#")
+                tvw_ntbColor_material.insert("", tk.END, values = (content[0], content[1]))
+                codesMaterial.append((content[0], content[1]))
+
+    def fillCombobox(self):
+
+        cbbListCorpusMeasure = [
+            cbb_corpusMeasure_pos1type,
+            cbb_corpusMeasure_pos2type,
+            cbb_corpusMeasure_pos3type,
+            cbb_corpusMeasure_pos4type,
+            cbb_corpusMeasure_pos5type,
+            cbb_corpusMeasure_pos6type,
+            cbb_corpusMeasure_pos7type,
+            cbb_corpusMeasure_pos8type
+        ]
+
+        cbbListGlassMeasure = [
+            cbb_glassMeasure_pos1type,
+            cbb_glassMeasure_pos2type,
+            cbb_glassMeasure_pos3type,
+            cbb_glassMeasure_pos4type,
+            cbb_glassMeasure_pos5type,
+            cbb_glassMeasure_pos6type,
+            cbb_glassMeasure_pos7type,
+            cbb_glassMeasure_pos8type
+        ]
+
+        content = [
+            dataHandler.dict_lang["lang_data_genInfo_type_surface"],
+            dataHandler.dict_lang["lang_data_genInfo_type_concealed"],
+            dataHandler.dict_lang["lang_data_genInfo_type_concealedMF"]
+        ]
+
+        cbb_genInfo_type.delete(0, tk.END)
+        cbb_genInfo_type.configure(values = content)
+        cbb_genInfo_type.current(newindex = 0)
+
+        content = [
+            dataHandler.dict_lang["lang_general_none"],
+            dataHandler.dict_lang["lang_data_genInfo_specials_LEDfrontal"],
+            dataHandler.dict_lang["lang_data_genInfo_specials_LEDinternal"]
+        ]
+
+        cbb_genInfo_specials.delete(0, tk.END)
+        cbb_genInfo_specials.configure(values = content)
+        cbb_genInfo_specials.current(newindex = 0)
+
+        content = [
+            dataHandler.dict_lang["lang_general_none"],
+            dataHandler.dict_lang["lang_data_corInfo_light_warm"],
+            dataHandler.dict_lang["lang_data_corInfo_light_neutral"],
+            dataHandler.dict_lang["lang_data_corInfo_light_cct"],
+            dataHandler.dict_lang["lang_data_corInfo_light_rgb"]
+        ]
+
+        cbb_corInfo_light.delete(0, tk.END)
+        cbb_corInfo_light.configure(values = content)
+        cbb_corInfo_light.current(newindex = 0)
+
+        content = [
+            dataHandler.dict_lang["lang_general_none"],
+            dataHandler.dict_lang["lang_data_extra_type_1vert"],
+            dataHandler.dict_lang["lang_data_extra_type_2vert"],
+            dataHandler.dict_lang["lang_data_extra_type_1hori"]
+        ]
+
+        cbb_extra_type.delete(0, tk.END)
+        cbb_extra_type.configure(values = content)
+        cbb_extra_type.current(newindex = 0)
+
+        for combobox in cbbListCorpusMeasure:
+
+            content = [
+                dataHandler.dict_lang["lang_general_none"],
+                dataHandler.dict_lang["lang_data_corpusMeasure_type_ground"],
+                dataHandler.dict_lang["lang_data_corpusMeasure_type_side"],
+                dataHandler.dict_lang["lang_data_corpusMeasure_type_middleground"],
+                dataHandler.dict_lang["lang_data_corpusMeasure_type_middleside"],
+                dataHandler.dict_lang["lang_data_corpusMeasure_type_MF_ground"],
+                dataHandler.dict_lang["lang_data_corpusMeasure_type_MF_side"],
+                dataHandler.dict_lang["lang_data_corpusMeasure_type_backwall"]
+            ]
+
+            combobox.delete(0, tk.END)
+            combobox.configure(values = content)
+            combobox.current(newindex = 0)
+
+        for combobox in cbbListGlassMeasure:
+
+            content = [
+                dataHandler.dict_lang["lang_general_none"],
+                dataHandler.dict_lang["lang_data_glassMeasure_type_mirror3"],
+                dataHandler.dict_lang["lang_data_glassMeasure_type_mirror6"],
+                dataHandler.dict_lang["lang_data_glassMeasure_type_glass6"]
+            ]
+        
+            combobox.delete(0, tk.END)
+            combobox.configure(values = content)
+            combobox.current(newindex = 0)
+
+    def validateEntryInput(self, input, acttyp):
+
+        if acttyp == "1":
+
+            if not input.isdigit():
+
+                return False
+
+        return True
+
+    def checkInputs(self):
+        
+        valid = True
+
+        if ety_genInfo_orderIDVar.get() == "":
+
+            lbl_genInfo_orderID.configure(foreground = "red")
+
+            valid = False
+
+        if ety_measure_widthVar.get() == "":
+
+            lbl_measure_width.configure(foreground = "red")
+
+            valid = False
+        
+        if ety_measure_heightVar.get() == "":
+
+            lbl_measure_height.configure(foreground = "red")
+
+            valid = False
+
+        if ety_measure_depthVar.get() == "":
+
+            lbl_measure_depth.configure(foreground = "red")
+
+            valid = False
+
+        if ety_corInfo_doorVar.get() == "":
+
+            lbl_corInfo_door.configure(foreground = "red")
+
+            valid = False
+
+        if ety_corInfo_shelfVar.get() == "":
+
+            lbl_corInfo_shelf.configure(foreground = "red")
+
+            valid = False
+
+        overhandList = [0, 1, 2]
+
+        if cbb_extra_type.current() in overhandList and ety_corInfo_overhangUpperVar.get() == "":
+
+            lbl_corInfo_overhangUpper.configure(foreground = "red")
+
+            valid = False
+
+        if cbb_extra_type.current() in overhandList and ety_corInfo_overhangLowerVar.get() == "":
+
+            lbl_corInfo_overhangLower.configure(foreground = "red")
+
+            valid = False
+
+        if cbb_extra_type.current() != 0 and ety_extra_measureVar.get() == "":
+
+            lbl_extra_measure.configure(foreground = "red")
+
+            valid = False
+
+        if valid == False:
+
+            msgBox = tkmsg.showwarning(title = title, message = dataHandler.dict_lang["lang_error_inputs"])
+            return False
+
+        else:
+            
+            return True
+
+    def checkInfoBoxLength(self):
+
+        textboxContent = txt_infoBox.get("1.0", tk.END)[:(len(txt_infoBox.get("1.0", tk.END)) - 1)]
+        textboxContentSplited = textboxContent.split("\n")
+        newLine = []
+        wrapLines = []
+
+        for line in textboxContentSplited:
+
+            newLine.clear()
+
+            if len(line) > fileHandler.textboxMaxChar:
+
+                newLine = textwrap.wrap(line, fileHandler.textboxMaxChar)
+
+            else:
+
+                newLine.append(line)
+
+            for i in newLine:
+
+                wrapLines.append(i)
+
+        if len(wrapLines) > fileHandler.textboxMaxLines:
+
+            return False
+
+        else:
+
+            return True
+
+    def loadRCFile(self):
+
+        dir = None
+
+        if dataHandler.dict_config["savedir"] == "":
+
+            dir = join(dataHandler.rootDir, "output")
+
+            if isdir(dir) == True:
+
+                dirRCF = join(dir, "rcf")
+
+                if isdir(dirRCF) == True:
+
+                    dir = dirRCF
+
+            else:
+
+                dir = dataHandler.rootDir
+
+        loadFile = tkfile.askopenfilename(filetypes = [("RC-File", "*.rcf")], initialdir = dir)
 
         if loadFile ==  "":
 
@@ -1990,325 +2378,35 @@ class mainUserInterface(tk.Frame):
         ety_packaging_heightVar.set(packaging["packheight"])
         ety_packaging_depthVar.set(packaging["packdepth"])
 
-    def btn_settings_callback(self):
+    def createPDF(self):
 
-        runSettingsInterface()
+        if self.checkInfoBoxLength() == False:
 
-    def btn_quit_callback(self):
-
-        self.closeWindow()
-
-    def calcMeasures(self, creationCalc = False):
-
-        try:
-
-            doorAmount = int(ety_corInfo_doorVar.get())
-
-        except:
-
-            pass
-
-        if doorAmount >= 5:
-
-            if creationCalc == True:
-
-                feedback = tkmsg.askyesnocancel(title = dataHandler.titleVersion, message = dataHandler.lang_msg_doorAmountInvalid)
-
-            else:
-
-                feedback = tkmsg.askyesno(title = dataHandler.titleVersion, message = dataHandler.lang_msg_doorAmountInvalid)
-
-            if feedback == False:
-
-                return 0
-
-            elif feedback == None:
-
-                return 1
-
-        self.resetDefault(True)
-
-        if calcHandler.calculateCuttings(int(ety_measure_widthVar.get()), int(ety_measure_heightVar.get()), int(ety_measure_depthVar.get())) == True:
-
-            self.showInfo(dataHandler.lang_calc_success)
-
-        else:
-
-            self.showInfo(dataHandler.lang_calc_failed, False)
-
-    def notebookTabChange(self, notebook):
-        
-        global lastSelectedListbox
-
-        tabList = notebook.tabs()
-
-        for tab in tabList:
-
-            notebook.tab(tab, compound = "image")
-            notebook.tab(tab, sticky = "we")
-
-        activeTab = notebook.select()
-        notebook.tab(activeTab, compound = tk.LEFT)
-
-        activeIndex = notebook.index(activeTab)
-
-        if activeIndex == 0:
-
-            childList = tvw_ntbColor_aluminum.get_children()
-            tvw_ntbColor_aluminum.selection_set(childList[0])
-            tvw_ntbColor_aluminum.see(childList[0])
-
-        elif activeIndex == 1:
-
-            childList = tvw_ntbColor_unicolor.get_children()
-            tvw_ntbColor_unicolor.selection_set(childList[0])
-            tvw_ntbColor_unicolor.see(childList[0])
-
-        elif activeIndex == 2:
-
-            childList = tvw_ntbColor_wooden.get_children()
-            tvw_ntbColor_wooden.selection_set(childList[0])
-            tvw_ntbColor_wooden.see(childList[0])
-
-        elif activeIndex == 3:
-
-            childList = tvw_ntbColor_material.get_children()
-            tvw_ntbColor_material.selection_set(childList[0])
-            tvw_ntbColor_material.see(childList[0])
-        
-        lastSelectedListbox = activeIndex
-
-    def treeviewChange(self, treeview: ttk.Treeview):
-
-        global lastSelectedListboxItem
-
-        selection = treeview.selection()[0]
-
-        itemValues = treeview.item(selection)["values"]
-
-        color = itemValues[0] + " " + itemValues[1]
-        
-        ety_color_selectedVar.set(color)
-
-        lastSelectedListboxItem = selection
-
-    def fillTreeviewlists(self):
-
-        global codesAluminum
-        codesAluminum = []
-        codes = fileHandler.readFile(dataHandler.fPth_codesAluminum)
-
-        for line in codes:
-            if line[0] != "#":
-                content = line.split("#")
-                tvw_ntbColor_aluminum.insert("", tk.END, values = (content[0], content[1]))
-                codesAluminum.append((content[0], content[1]))
-
-        global codesUnicolor
-        codesUnicolor = []
-        codes = fileHandler.readFile(dataHandler.fPth_codesUnicolor)
-
-        for line in codes:
-            if line[0] != "#":
-                content = line.split("#")
-                tvw_ntbColor_unicolor.insert("", tk.END, values = (content[0], content[1]))
-                codesUnicolor.append((content[0], content[1]))
-
-        global codesWooden
-        codesWooden = []
-        codes = fileHandler.readFile(dataHandler.fPth_codesWood)
-        
-        for line in codes:
-            if line[0] != "#":
-                content = line.split("#")
-                tvw_ntbColor_wooden.insert("", tk.END, values = (content[0], content[1]))
-                codesWooden.append((content[0], content[1]))
-
-        global codesMaterial
-        codesMaterial = []
-        codes = fileHandler.readFile(dataHandler.fPth_codesMaterial)
-        
-        for line in codes:
-            if line[0] != "#":
-                content = line.split("#")
-                tvw_ntbColor_material.insert("", tk.END, values = (content[0], content[1]))
-                codesMaterial.append((content[0], content[1]))
-
-    def fillCombobox(self):
-
-        cbbListCorpusMeasure = [
-            cbb_corpusMeasure_pos1type,
-            cbb_corpusMeasure_pos2type,
-            cbb_corpusMeasure_pos3type,
-            cbb_corpusMeasure_pos4type,
-            cbb_corpusMeasure_pos5type,
-            cbb_corpusMeasure_pos6type,
-            cbb_corpusMeasure_pos7type,
-            cbb_corpusMeasure_pos8type
-        ]
-
-        cbbListGlassMeasure = [
-            cbb_glassMeasure_pos1type,
-            cbb_glassMeasure_pos2type,
-            cbb_glassMeasure_pos3type,
-            cbb_glassMeasure_pos4type,
-            cbb_glassMeasure_pos5type,
-            cbb_glassMeasure_pos6type,
-            cbb_glassMeasure_pos7type,
-            cbb_glassMeasure_pos8type
-        ]
-
-        content = [
-            dataHandler.lang_data_genInfo_type_surface,
-            dataHandler.lang_data_genInfo_type_concealed,
-            dataHandler.lang_data_genInfo_type_concealedMF
-        ]
-
-        cbb_genInfo_type.delete(0, tk.END)
-        cbb_genInfo_type.configure(values = content)
-        cbb_genInfo_type.current(newindex = 0)
-
-        content = [
-            dataHandler.lang_general_none,
-            dataHandler.lang_data_genInfo_specials_LEDfrontal,
-            dataHandler.lang_data_genInfo_specials_LEDinternal
-        ]
-
-        cbb_genInfo_specials.delete(0, tk.END)
-        cbb_genInfo_specials.configure(values = content)
-        cbb_genInfo_specials.current(newindex = 0)
-
-        content = [
-            dataHandler.lang_general_none,
-            dataHandler.lang_data_corInfo_light_warm,
-            dataHandler.lang_data_corInfo_light_neutral,
-            dataHandler.lang_data_corInfo_light_cct,
-            dataHandler.lang_data_corInfo_light_rgb
-        ]
-
-        cbb_corInfo_light.delete(0, tk.END)
-        cbb_corInfo_light.configure(values = content)
-        cbb_corInfo_light.current(newindex = 0)
-
-        content = [
-            dataHandler.lang_general_none,
-            dataHandler.lang_data_extra_type_1vert,
-            dataHandler.lang_data_extra_type_2vert,
-            dataHandler.lang_data_extra_type_1hori
-        ]
-
-        cbb_extra_type.delete(0, tk.END)
-        cbb_extra_type.configure(values = content)
-        cbb_extra_type.current(newindex = 0)
-
-        for combobox in cbbListCorpusMeasure:
-
-            content = [
-                dataHandler.lang_general_none,
-                dataHandler.lang_data_corpusMeasure_type_ground,
-                dataHandler.lang_data_corpusMeasure_type_side,
-                dataHandler.lang_data_corpusMeasure_type_middleground,
-                dataHandler.lang_data_corpusMeasure_type_middleside,
-                dataHandler.lang_data_corpusMeasure_type_MF_ground,
-                dataHandler.lang_data_corpusMeasure_type_MF_side,
-                dataHandler.lang_data_corpusMeasure_type_backwall
-            ]
-
-            combobox.delete(0, tk.END)
-            combobox.configure(values = content)
-            combobox.current(newindex = 0)
-
-        for combobox in cbbListGlassMeasure:
-
-            content = [
-                dataHandler.lang_general_none,
-                dataHandler.lang_data_glassMeasure_type_mirror3,
-                dataHandler.lang_data_glassMeasure_type_mirror6,
-                dataHandler.lang_data_glassMeasure_type_glass6
-            ]
-        
-            combobox.delete(0, tk.END)
-            combobox.configure(values = content)
-            combobox.current(newindex = 0)
-
-    def validateEntryInput(self, input, acttyp):
-
-        if acttyp == "1":
-
-            if not input.isdigit():
+            if tkmsg.askyesno(title = dataHandler.titleVersion, message = dataHandler.dict_lang["lang_textbox_info"]) == False:
 
                 return False
 
-        return True
+        if dataHandler.dict_config["calculatebeforecreate"] == True:
 
-    def checkInputs(self):
-        
-        valid = True
+            if self.checkInputs() == False:
 
-        if ety_genInfo_orderIDVar.get() == "":
+                return
 
-            lbl_genInfo_orderID.configure(foreground = "red")
+            if self.calcMeasures(True) == 1:
 
-            valid = False
+                return
 
-        if ety_measure_widthVar.get() == "":
+        if dataHandler.dict_config["creatercfile"] == True:
 
-            lbl_measure_width.configure(foreground = "red")
+            dataHandler.writeRCFile()
 
-            valid = False
-        
-        if ety_measure_heightVar.get() == "":
+        if fileHandler.createPDF() == True:
 
-            lbl_measure_height.configure(foreground = "red")
-
-            valid = False
-
-        if ety_measure_depthVar.get() == "":
-
-            lbl_measure_depth.configure(foreground = "red")
-
-            valid = False
-
-        if ety_corInfo_doorVar.get() == "":
-
-            lbl_corInfo_door.configure(foreground = "red")
-
-            valid = False
-
-        if ety_corInfo_shelfVar.get() == "":
-
-            lbl_corInfo_shelf.configure(foreground = "red")
-
-            valid = False
-
-        overhandList = [0, 1, 2]
-
-        if cbb_extra_type.current() in overhandList and ety_corInfo_overhangUpperVar.get() == "":
-
-            lbl_corInfo_overhangUpper.configure(foreground = "red")
-
-            valid = False
-
-        if cbb_extra_type.current() in overhandList and ety_corInfo_overhangLowerVar.get() == "":
-
-            lbl_corInfo_overhangLower.configure(foreground = "red")
-
-            valid = False
-
-        if cbb_extra_type.current() != 0 and ety_extra_measureVar.get() == "":
-
-            lbl_extra_measure.configure(foreground = "red")
-
-            valid = False
-
-        if valid == False:
-
-            msgBox = tkmsg.showwarning(title = title, message = dataHandler.lang_error_inputs)
-            return False
+            self.showInfo(dataHandler.dict_lang["lang_creation_success"])
 
         else:
-            
-            return True
+
+            self.showInfo(dataHandler.dict_lang["lang_creation_failed"], False)
 
     def updateDependencies(self, enableAll = False):
 
@@ -2736,34 +2834,34 @@ class mainUserInterface(tk.Frame):
         if reverse == None:
             reverse = False
             if column == 0:
-                treeview.heading("id", text = dataHandler.lang_general_ID + " ↑")
-                treeview.heading("name", text = dataHandler.lang_general_name)
+                treeview.heading("id", text = dataHandler.dict_lang["lang_general_ID"] + " ↑")
+                treeview.heading("name", text = dataHandler.dict_lang["lang_general_name"])
                 reverse_last = 0
             else:
-                treeview.heading("id", text = dataHandler.lang_general_ID)
-                treeview.heading("name", text = dataHandler.lang_general_name + " ↑")
+                treeview.heading("id", text = dataHandler.dict_lang["lang_general_ID"])
+                treeview.heading("name", text = dataHandler.dict_lang["lang_general_name"] + " ↑")
                 reverse_last = 1
 
         elif reverse == False:
             reverse = True
             if column == 0:
-                treeview.heading("id", text = dataHandler.lang_general_ID + " ↓")
-                treeview.heading("name", text = dataHandler.lang_general_name)
+                treeview.heading("id", text = dataHandler.dict_lang["lang_general_ID"] + " ↓")
+                treeview.heading("name", text = dataHandler.dict_lang["lang_general_name"])
                 reverse_last = 0
             else:
-                treeview.heading("id", text = dataHandler.lang_general_ID)
-                treeview.heading("name", text = dataHandler.lang_general_name + " ↓")
+                treeview.heading("id", text = dataHandler.dict_lang["lang_general_ID"])
+                treeview.heading("name", text = dataHandler.dict_lang["lang_general_name"] + " ↓")
                 reverse_last = 1
 
         else:
             reverse = None
             if column == 0:
-                treeview.heading("id", text = dataHandler.lang_general_ID)
-                treeview.heading("name", text = dataHandler.lang_general_name)
+                treeview.heading("id", text = dataHandler.dict_lang["lang_general_ID"])
+                treeview.heading("name", text = dataHandler.dict_lang["lang_general_name"])
                 reverse_last = 0
             else:
-                treeview.heading("id", text = dataHandler.lang_general_ID)
-                treeview.heading("name", text = dataHandler.lang_general_name)
+                treeview.heading("id", text = dataHandler.dict_lang["lang_general_ID"])
+                treeview.heading("name", text = dataHandler.dict_lang["lang_general_name"])
                 reverse_last = 1
         
         reverse_last = column
@@ -2852,7 +2950,7 @@ class mainUserInterface(tk.Frame):
 
             if tooltipID == None:
 
-                tooltipID = 0
+                tooltipID = "tool_error"
 
             ety_general_feedbackVar.set(dataHandler.dict_tooltips[tooltipID])
 
@@ -2904,6 +3002,86 @@ class mainUserInterface(tk.Frame):
                         
             runUpdaterInterface()
 
+    def mnu_reset_callback(self):
+
+        self.resetDefault()
+
+    def mnu_open_callback(self):
+
+        self.loadRCFile()
+
+    def mnu_save_callback(self):
+
+        dataHandler.writeRCFile()
+
+    def mnu_saveas_callback(self):
+
+        dir = None
+
+        if dataHandler.dict_config["savedir"] == "":
+
+            dir = join(dataHandler.rootDir, "output")
+
+            if isdir(dir) == True:
+
+                dirRCF = join(dir, "rcf")
+
+                if isdir(dirRCF) == True:
+
+                    dir = dirRCF
+
+            else:
+
+                dir = dataHandler.rootDir
+
+        tkfile.asksaveasfilename(title = dataHandler.titleVersion, filetypes = [("RC-File", "*.rcf")], initialdir = dir)
+
+    def mnu_quit_callback(self):
+
+        self.closeWindow()
+
+    def mnu_calculate_callback(self):
+
+        self.calcMeasures()
+
+    def mnu_create_callback(self):
+
+        self.createPDF()
+
+    def mnu_opensave_callback(self):
+
+        dir = None
+
+        if dataHandler.dict_config["savedir"] == "":
+
+            dir = join(dataHandler.rootDir, "output")
+
+            if isdir(dir) == True:
+
+                dirRCF = join(dir, "rcf")
+
+                if isdir(dirRCF) == True:
+
+                    dir = dirRCF
+
+            else:
+
+                dir = dataHandler.rootDir
+
+        Popen('explorer "{}"'.format(dir))
+
+    def mnu_settings_callback(self):
+
+        runSettingsInterface()
+
+    def mnu_github_callback(self):
+
+        webbrowser.open_new_tab(dataHandler.gitPath)
+
+    def mnu_updates_callback(self):
+
+        runUpdaterInterface()
+
 class settingsInterface(tk.Toplevel):
 
     def __init__(self):
@@ -2928,7 +3106,7 @@ class settingsInterface(tk.Toplevel):
         # -------------------------------------- #
 
         # frame
-        frm_prgInfo = ttk.LabelFrame(master = self, text = dataHandler.lang_frmPrgInfo, style = "Bold.TLabelframe")
+        frm_prgInfo = ttk.LabelFrame(master = self, text = dataHandler.dict_lang["lang_frmPrgInfo"], style = "Bold.TLabelframe")
         frm_prgInfo.grid(row = 0, column = 0, padx = 2, pady = 1)
 
         # spacer
@@ -2939,8 +3117,8 @@ class settingsInterface(tk.Toplevel):
         version = "Version " + str(dataHandler.version) + "." + str(dataHandler.subversion) + "." + str(dataHandler.subsubversion)
         lbl_prgInfo_name = ttk.Label(master = frm_prgInfo, text = dataHandler.title + " " + version, width = 32, anchor = "center", state = "disabled")
         lbl_prgInfo_author = ttk.Label(master = frm_prgInfo, text = "Made by Achim Abdinghoff", width = 32, anchor = "center", state = "disabled")
-        lbl_prgInfo_git = ttk.Label(master = frm_prgInfo, text = dataHandler.lang_prgInfo_git, width = 32, anchor = "center", foreground = "blue", cursor = "hand2")
-        lbl_prgInfo_contact = ttk.Label(master = frm_prgInfo, text = dataHandler.lang_prgInfo_contact, width = 32, anchor = "center", foreground = "blue", cursor = "hand2")
+        lbl_prgInfo_git = ttk.Label(master = frm_prgInfo, text = dataHandler.dict_lang["lang_prgInfo_git"], width = 32, anchor = "center", foreground = "blue", cursor = "hand2")
+        lbl_prgInfo_contact = ttk.Label(master = frm_prgInfo, text = dataHandler.dict_lang["lang_prgInfo_contact"], width = 32, anchor = "center", foreground = "blue", cursor = "hand2")
 
         # separator
         sep_prgInfo = ttk.Separator(master = frm_prgInfo, orient = "horizontal")
@@ -2962,7 +3140,7 @@ class settingsInterface(tk.Toplevel):
         # -------------------------------------- #
 
         # frame
-        frm_fileHandling = ttk.LabelFrame(master = self, text = dataHandler.lang_frmFileHandling, style = "Bold.TLabelframe")
+        frm_fileHandling = ttk.LabelFrame(master = self, text = dataHandler.dict_lang["lang_frmFileHandling"], style = "Bold.TLabelframe")
         frm_fileHandling.grid(row = 1, column = 0, padx = 2, pady = 1)
 
         # spacer
@@ -2970,18 +3148,18 @@ class settingsInterface(tk.Toplevel):
         spc_fileHandling.grid(row = 0, column = 0, columnspan = 2)
         
         # label
-        lbl_fileHandling_saveDir = ttk.Label(master = frm_fileHandling, text = dataHandler.lang_fileHandling_saveDir)
+        lbl_fileHandling_saveDir = ttk.Label(master = frm_fileHandling, text = dataHandler.dict_lang["lang_fileHandling_saveDir"])
 
         # input
         ety_fileHandling_saveDir = ttk.Entry(master = frm_fileHandling, width = 25, textvariable = ety_fileHandling_saveDirVar)
-        cbt_fileHandling_calculate = ttk.Checkbutton(master = frm_fileHandling, text = dataHandler.lang_fileHandling_calculate, variable = cbt_fileHandling_calculateVar)
-        cbt_fileHandling_RCFile = ttk.Checkbutton(master = frm_fileHandling, text = dataHandler.lang_fileHandling_RCFile, variable = cbt_fileHandling_RCFileVar)
-        cbt_fileHandling_openPDF = ttk.Checkbutton(master = frm_fileHandling, text = dataHandler.lang_fileHandling_openPDF, variable = cbt_fileHandling_openPDFVar)
-        cbt_fileHandling_printPDF = ttk.Checkbutton(master = frm_fileHandling, text = dataHandler.lang_fileHandling_printPDF, variable = cbt_fileHandling_printPDFVar)
+        cbt_fileHandling_calculate = ttk.Checkbutton(master = frm_fileHandling, text = dataHandler.dict_lang["lang_fileHandling_calculate"], variable = cbt_fileHandling_calculateVar)
+        cbt_fileHandling_RCFile = ttk.Checkbutton(master = frm_fileHandling, text = dataHandler.dict_lang["lang_fileHandling_RCFile"], variable = cbt_fileHandling_RCFileVar)
+        cbt_fileHandling_openPDF = ttk.Checkbutton(master = frm_fileHandling, text = dataHandler.dict_lang["lang_fileHandling_openPDF"], variable = cbt_fileHandling_openPDFVar)
+        cbt_fileHandling_printPDF = ttk.Checkbutton(master = frm_fileHandling, text = dataHandler.dict_lang["lang_fileHandling_printPDF"], variable = cbt_fileHandling_printPDFVar)
 
         # buttons
         btn_fileHandling_saveDir = ttk.Button(master = frm_fileHandling, text = "...", width = 3, command = self.btn_saveDir_callback)
-        btn_fileHandling_files = ttk.Button(master = frm_fileHandling, text = dataHandler.lang_fileHandling_files, command = self.btn_filesDir_callback)
+        btn_fileHandling_files = ttk.Button(master = frm_fileHandling, text = dataHandler.dict_lang["lang_fileHandling_files"], command = self.btn_filesDir_callback)
 
         # label grid
         lbl_fileHandling_saveDir.grid(row = 0, column = 0, padx = 1, pady = 1, sticky = "w")
@@ -2989,7 +3167,7 @@ class settingsInterface(tk.Toplevel):
         # input grid
         ety_fileHandling_saveDir.grid(row = 1, column = 0, padx = 2, pady = 1)
         cbt_fileHandling_calculate.grid(row = 2, column = 0, columnspan = 2, padx = 1, pady = 1, sticky = "w")
-        cbt_fileHandling_RCFile.grid(row = 3, column = 0, columnspan = 2, padx = 1, pady = 1, sticky = "w")
+        cbt_fileHandling_RCFile.grid(row = 3, column = 0, padx = 1, pady = 1, sticky = "w")
         cbt_fileHandling_openPDF.grid(row = 4, column = 0, columnspan = 2, padx = 1, pady = 1, sticky = "w")
         cbt_fileHandling_printPDF.grid(row = 5, column = 0, columnspan = 2, padx = 1, pady = 1, sticky = "w")
 
@@ -3002,7 +3180,7 @@ class settingsInterface(tk.Toplevel):
         # -------------------------------------- #
 
         # frame
-        frm_matPresets = ttk.LabelFrame(master = self, text = dataHandler.lang_frmMatPresets, style = "Bold.TLabelframe")
+        frm_matPresets = ttk.LabelFrame(master = self, text = dataHandler.dict_lang["lang_frmMatPresets"], style = "Bold.TLabelframe")
         frm_matPresets.grid(row = 2, column = 0, padx = 2, pady = 1)
 
         # spacer
@@ -3010,11 +3188,11 @@ class settingsInterface(tk.Toplevel):
         spc_matPresets.grid(row = 0, column = 0, columnspan = 2)
 
         # label
-        lbl_matPresets_packaging = ttk.Label(master = frm_matPresets, text = dataHandler.lang_matPresets_packaging)
-        lbl_matPresets_wood = ttk.Label(master = frm_matPresets, text = dataHandler.lang_matPresets_wood)
-        lbl_matPresets_aluminum = ttk.Label(master = frm_matPresets, text = dataHandler.lang_matPresets_aluminum)
-        lbl_matPresets_LEDFrontal = ttk.Label(master = frm_matPresets, text = dataHandler.lang_matPresets_LEDFrontal)
-        lbl_matPresets_LEDInternal = ttk.Label(master = frm_matPresets, text = dataHandler.lang_matPresets_LEDInternal)
+        lbl_matPresets_packaging = ttk.Label(master = frm_matPresets, text = dataHandler.dict_lang["lang_matPresets_packaging"])
+        lbl_matPresets_wood = ttk.Label(master = frm_matPresets, text = dataHandler.dict_lang["lang_matPresets_wood"])
+        lbl_matPresets_aluminum = ttk.Label(master = frm_matPresets, text = dataHandler.dict_lang["lang_matPresets_aluminum"])
+        lbl_matPresets_LEDFrontal = ttk.Label(master = frm_matPresets, text = dataHandler.dict_lang["lang_matPresets_LEDFrontal"])
+        lbl_matPresets_LEDInternal = ttk.Label(master = frm_matPresets, text = dataHandler.dict_lang["lang_matPresets_LEDInternal"])
 
         # input
         ety_matPresets_packaging = ttk.Entry(master = frm_matPresets, textvariable = ety_matPresets_packagingVar, width = 13, justify = "right")
@@ -3041,8 +3219,10 @@ class settingsInterface(tk.Toplevel):
         #      Other                             #
         # -------------------------------------- #
 
+        global cbb_other_language
+
         # frame
-        frm_other = ttk.LabelFrame(master = self, text = dataHandler.lang_frmOther, style = "Bold.TLabelframe")
+        frm_other = ttk.LabelFrame(master = self, text = dataHandler.dict_lang["lang_frmOther"], style = "Bold.TLabelframe")
         frm_other.grid(row = 3, column = 0, padx = 2, pady = 1)
 
         # spacer
@@ -3050,36 +3230,34 @@ class settingsInterface(tk.Toplevel):
         spc_other.grid(row = 0, column = 0, columnspan = 2)
 
         # label
-        lbl_other_language = ttk.Label(master = frm_other, text = dataHandler.lang_other_language)
-        lbl_other_info = ttk.Label(master = frm_other, text = dataHandler.lang_other_info, state = "disabled")
+        lbl_other_language = ttk.Label(master = frm_other, text = dataHandler.dict_lang["lang_other_language"])
+        lbl_other_info = ttk.Label(master = frm_other, text = dataHandler.dict_lang["lang_other_info"], state = "disabled")
 
         # input
-        cbt_other_autoUpdate = ttk.Checkbutton(master = frm_other, text = dataHandler.lang_other_autoUpdate, variable = cbt_other_autoUpdateVar)
-        ety_other_language = ttk.Entry(master = frm_other, width = 25, textvariable = ety_other_languageVar)
+        cbb_other_language = ttk.Combobox(master = frm_other, state = "readonly", width = 18)
+        cbt_other_autoUpdate = ttk.Checkbutton(master = frm_other, text = dataHandler.dict_lang["lang_other_autoUpdate"], variable = cbt_other_autoUpdateVar)
 
         # buttons
-        btn_other_languageDir = ttk.Button(master = frm_other, text = "...", width = 3, command = self.btn_langDir_callback)
-        btn_other_update = ttk.Button(master = frm_other, text = dataHandler.lang_button_update, command = self.btn_update_callback)
+        btn_other_update = ttk.Button(master = frm_other, text = dataHandler.dict_lang["lang_button_update"], command = self.btn_update_callback)
 
         # label grid
         lbl_other_language.grid(row = 0, column = 0, padx = 1, pady = 1, sticky = "w")
-        lbl_other_info.grid(row = 2, column = 0, columnspan = 2, padx = 1, pady = 1, sticky = "w")
+        lbl_other_info.grid(row = 1, column = 0, columnspan = 2, padx = 1, pady = 1, sticky = "w")
 
         # input grid
-        cbt_other_autoUpdate.grid(row = 3, column = 0, columnspan = 2, padx = 1, pady = 1, sticky = "w")
-        ety_other_language.grid(row = 1, column = 0, padx = 1, pady = 1)
+        cbb_other_language.grid(row = 0, column = 1, padx = 1, pady = 1, sticky = "e")
+        cbt_other_autoUpdate.grid(row = 2, column = 0, columnspan = 2, padx = 1, pady = 1, sticky = "w")
 
         # buttons grid
-        btn_other_languageDir.grid(row = 1, column = 1, padx = 1, pady = 1)
-        btn_other_update.grid(row = 4, column = 0, columnspan = 2, sticky = "we")
+        btn_other_update.grid(row = 3, column = 0, columnspan = 2, sticky = "we")
 
         # -------------------------------------- #
         #      Buttons                           #
         # -------------------------------------- #
 
         # buttons
-        btn_settings_save = ttk.Button(master = self, text = dataHandler.lang_button_save, width = 31, command = self.btn_save_callback)
-        btn_settings_close = ttk.Button(master = self, text = dataHandler.lang_button_close, width = 31, command = self.btn_close_callback)
+        btn_settings_save = ttk.Button(master = self, text = dataHandler.dict_lang["lang_button_save"], width = 31, command = self.btn_save_callback)
+        btn_settings_close = ttk.Button(master = self, text = dataHandler.dict_lang["lang_button_close"], width = 31, command = self.btn_close_callback)
 
         # buttons grid
         btn_settings_save.grid(row = 4, column = 0, padx = 1, pady = 1)
@@ -3093,28 +3271,13 @@ class settingsInterface(tk.Toplevel):
 
             ety_fileHandling_saveDirVar.set(saveDir)
 
-    def btn_langDir_callback(self):
-
-        langDir = tkfile.askopenfilename(filetypes = [("RC-Language-File", "*.rcl")], initialdir = "./lang")
-
-        if langDir != "" and isfile(langDir) == True:
-
-            ety_other_languageVar.set(langDir)
-
     def btn_filesDir_callback(self):
 
-        path = join(curdir, "files")
-
-        Popen('explorer "{}"'.format(path))
+        Popen('explorer "{}"'.format(dataHandler.filesDir))
 
     def btn_update_callback(self):
 
         self.grab_release()
-
-        global releaseLatest
-        global releaseExperimental
-
-        releaseLatest, releaseExperimental = updateHandler.getReleases()
 
         runUpdaterInterface()
 
@@ -3129,39 +3292,64 @@ class settingsInterface(tk.Toplevel):
 
     def loadSettings(self):
 
+        # language
+
+        content = ["Program Standart"]
+
+        for lang in dataHandler.langFiles:
+
+            content.append(lang.replace('"',""))
+
+        cbb_other_language.delete(0, tk.END)
+        cbb_other_language.configure(values = content)
+
+        if dataHandler.dict_config["activelang"] == "":
+
+            cbb_other_language.set("Program Standart")
+
+        else:
+
+            cbb_other_language.set(dataHandler.dict_config["activelang"])
+
+        # settings
+
         dataHandler.readConfigINI()
 
-        ety_fileHandling_saveDirVar.set(dataHandler.saveDir)
-        cbt_fileHandling_calculateVar.set(dataHandler.calculateBeforeCreate)
-        cbt_fileHandling_RCFileVar.set(dataHandler.createRCFile)
-        cbt_fileHandling_openPDFVar.set(dataHandler.openPDF)
-        cbt_fileHandling_printPDFVar.set(dataHandler.printPDF)
+        ety_fileHandling_saveDirVar.set(dataHandler.dict_config["savedir"])
+        cbt_fileHandling_calculateVar.set(dataHandler.dict_config["calculatebeforecreate"])
+        cbt_fileHandling_RCFileVar.set(dataHandler.dict_config["creatercfile"])
+        cbt_fileHandling_openPDFVar.set(dataHandler.dict_config["openpdf"])
+        cbt_fileHandling_printPDFVar.set(dataHandler.dict_config["printpdf"])
 
-        ety_matPresets_packagingVar.set(dataHandler.packingMatThickness)
-        ety_matPresets_woodVar.set(dataHandler.woodenThickness)
-        ety_matPresets_aluminumVar.set(dataHandler.aluminiumThickness)
-        ety_matPresets_LEDFrontalVar.set(dataHandler.LEDThicknessFrontal)
-        ety_matPresets_LEDInternalVar.set(dataHandler.LEDThicknessInternal)
+        ety_matPresets_packagingVar.set(dataHandler.dict_config["packingmatthickness"])
+        ety_matPresets_woodVar.set(dataHandler.dict_config["woodenthickness"])
+        ety_matPresets_aluminumVar.set(dataHandler.dict_config["aluminumthickness"])
+        ety_matPresets_LEDFrontalVar.set(dataHandler.dict_config["ledthicknessfrontal"])
+        ety_matPresets_LEDInternalVar.set(dataHandler.dict_config["ledthicknessinternal"])
 
-        cbt_other_autoUpdateVar.set(dataHandler.autoaskUpdate)
-        ety_other_languageVar.set(dataHandler.activeLang)
+        cbt_other_autoUpdateVar.set(dataHandler.dict_updateConfig["autoaskupdate"])
 
     def saveSettings(self):
 
-        dataHandler.saveDir = ety_fileHandling_saveDirVar.get()
-        dataHandler.calculateBeforeCreate = cbt_fileHandling_calculateVar.get()
-        dataHandler.createRCFile = cbt_fileHandling_RCFileVar.get()
-        dataHandler.openPDF = cbt_fileHandling_openPDFVar.get()
-        dataHandler.printPDF = cbt_fileHandling_printPDFVar.get()
+        # language
+        
+        dataHandler.dict_config["activelang"] = cbb_other_language.get()
 
-        dataHandler.packingMatThickness = int(ety_matPresets_packagingVar.get())
-        dataHandler.woodenThickness = int(ety_matPresets_woodVar.get())
-        dataHandler.aluminiumThickness = int(ety_matPresets_aluminumVar.get())
-        dataHandler.LEDThicknessFrontal = int(ety_matPresets_LEDFrontalVar.get())
-        dataHandler.LEDThicknessInternal = int(ety_matPresets_LEDInternalVar.get())
+        # settings
 
-        dataHandler.autoaskUpdate = cbt_other_autoUpdateVar.get()
-        dataHandler.activeLang = ety_other_languageVar.get()
+        dataHandler.dict_config["savedir"] = ety_fileHandling_saveDirVar.get()
+        dataHandler.dict_config["calculatebeforecreate"] = cbt_fileHandling_calculateVar.get()
+        dataHandler.dict_config["creatercfile"] = cbt_fileHandling_RCFileVar.get()
+        dataHandler.dict_config["openpdf"] = cbt_fileHandling_openPDFVar.get()
+        dataHandler.dict_config["printpdf"] = cbt_fileHandling_printPDFVar.get()
+
+        dataHandler.dict_config["packingmatthickness"] = int(ety_matPresets_packagingVar.get())
+        dataHandler.dict_config["woodenthickness"] = int(ety_matPresets_woodVar.get())
+        dataHandler.dict_config["aluminumthickness"] = int(ety_matPresets_aluminumVar.get())
+        dataHandler.dict_config["ledthicknessfrontal"] = int(ety_matPresets_LEDFrontalVar.get())
+        dataHandler.dict_config["ledthicknessinternal"] = int(ety_matPresets_LEDInternalVar.get())
+
+        dataHandler.dict_updateConfig["autoaskupdate"] = cbt_other_autoUpdateVar.get()
 
         dataHandler.writeConfigINI()
 
@@ -3222,7 +3410,7 @@ class updaterInterface(tk.Toplevel):
         global ety_updateInfo_versionLatest
 
         # frame
-        frm_updateInfo = ttk.LabelFrame(master = self, text = dataHandler.lang_frmUpdateInfo, style = "Bold.TLabelframe")
+        frm_updateInfo = ttk.LabelFrame(master = self, text = dataHandler.dict_lang["lang_frmUpdateInfo"], style = "Bold.TLabelframe")
         frm_updateInfo.grid(row = 0, column = 0, padx = 2, pady = 1, columnspan = 2)
 
         # spacer
@@ -3230,9 +3418,9 @@ class updaterInterface(tk.Toplevel):
         spc_updateInfo.grid(row = 0, column = 0, columnspan = 2)
 
         # label
-        lbl_updateInfo_state = ttk.Label(master = frm_updateInfo, text = dataHandler.lang_updateInfo_statusNone, style = "Header.TLabel.Label")
-        lbl_updateInfo_versionUsed = ttk.Label(master = frm_updateInfo, text = dataHandler.lang_updateInfo_versionUsed)
-        lbl_updateInfo_versionLatest = ttk.Label(master = frm_updateInfo, text = dataHandler.lang_updateInfo_versionLatest)
+        lbl_updateInfo_state = ttk.Label(master = frm_updateInfo, text = dataHandler.dict_lang["lang_updateInfo_statusNone"], style = "Header.TLabel.Label")
+        lbl_updateInfo_versionUsed = ttk.Label(master = frm_updateInfo, text = dataHandler.dict_lang["lang_updateInfo_versionUsed"])
+        lbl_updateInfo_versionLatest = ttk.Label(master = frm_updateInfo, text = dataHandler.dict_lang["lang_updateInfo_versionLatest"])
 
         # inputs
         ety_updateInfo_versionUsed = ttk.Entry(master = frm_updateInfo, state = "disabled", textvariable = ety_updateInfo_versionUsedVar, foreground = "black")
@@ -3254,7 +3442,7 @@ class updaterInterface(tk.Toplevel):
         global txt_changelog
 
         # frame
-        frm_changelog = ttk.LabelFrame(master = self, text = dataHandler.lang_frmChangelog, style = "Bold.TLabelframe")
+        frm_changelog = ttk.LabelFrame(master = self, text = dataHandler.dict_lang["lang_frmChangelog"], style = "Bold.TLabelframe")
         frm_changelog.grid(row = 1, column = 0, padx = 2, pady = 1, columnspan = 2)
 
         # spacer
@@ -3283,7 +3471,7 @@ class updaterInterface(tk.Toplevel):
         # -------------------------------------- #
 
         # frame
-        frm_updateSettings = ttk.LabelFrame(master = self, text = dataHandler.lang_frmUpdateSettings, style = "Bold.TLabelframe")
+        frm_updateSettings = ttk.LabelFrame(master = self, text = dataHandler.dict_lang["lang_frmUpdateSettings"], style = "Bold.TLabelframe")
         frm_updateSettings.grid(row = 2, column = 0, padx = 2, pady = 1, columnspan = 2)
 
         # spacer
@@ -3291,10 +3479,10 @@ class updaterInterface(tk.Toplevel):
         spc_updateSettings.grid(row = 0, column = 0)
 
         # inputs
-        cbt_updateSettings_experimental = ttk.Checkbutton(master = frm_updateSettings, text = dataHandler.lang_updateSettings_experimental, variable = cbt_updateSettings_experimentalVar, command = self.cbt_updateSettings_experimental_callback)
-        cbt_updateSettings_exportConfig = ttk.Checkbutton(master = frm_updateSettings, text = dataHandler.lang_updateSettings_exportConfig, variable = cbt_updateSettings_exportConfigVar)
-        cbt_updateSettings_exportDatabase = ttk.Checkbutton(master = frm_updateSettings, text = dataHandler.lang_updateSettings_exportDatabase, variable = cbt_updateSettings_exportDatabaseVar)
-        cbt_updateSettings_createShortcut = ttk.Checkbutton(master = frm_updateSettings, text = dataHandler.lang_updateSettings_shortcut, variable = cbt_updateSettings_createShortcutVar)
+        cbt_updateSettings_experimental = ttk.Checkbutton(master = frm_updateSettings, text = dataHandler.dict_lang["lang_updateSettings_experimental"], variable = cbt_updateSettings_experimentalVar, command = self.cbt_updateSettings_experimental_callback)
+        cbt_updateSettings_exportConfig = ttk.Checkbutton(master = frm_updateSettings, text = dataHandler.dict_lang["lang_updateSettings_exportConfig"], variable = cbt_updateSettings_exportConfigVar)
+        cbt_updateSettings_exportDatabase = ttk.Checkbutton(master = frm_updateSettings, text = dataHandler.dict_lang["lang_updateSettings_exportDatabase"], variable = cbt_updateSettings_exportDatabaseVar)
+        cbt_updateSettings_createShortcut = ttk.Checkbutton(master = frm_updateSettings, text = dataHandler.dict_lang["lang_updateSettings_shortcut"], variable = cbt_updateSettings_createShortcutVar)
 
         # inputs grid
         cbt_updateSettings_experimental.grid(row = 0, column = 0, sticky = "w", padx = 1, pady = 1)
@@ -3309,9 +3497,9 @@ class updaterInterface(tk.Toplevel):
         global btn_startUpdate
 
         # buttons
-        btn_startUpdate = ttk.Button(master = self, text = dataHandler.lang_button_updateStart, command = self.btn_startUpdate_callback, state = "disabled")
-        btn_viewGithub = ttk.Button(master = self, text = dataHandler.lang_button_github, command = self.btn_viewGithub_callback)
-        btn_closeUpdater = ttk.Button(master = self, text = dataHandler.lang_button_close, command = self.btn_closeUpdater_callback)
+        btn_startUpdate = ttk.Button(master = self, text = dataHandler.dict_lang["lang_button_updateStart"], command = self.btn_startUpdate_callback, state = "disabled")
+        btn_viewGithub = ttk.Button(master = self, text = dataHandler.dict_lang["lang_button_github"], command = self.btn_viewGithub_callback)
+        btn_closeUpdater = ttk.Button(master = self, text = dataHandler.dict_lang["lang_button_close"], command = self.btn_closeUpdater_callback)
 
         # buttons grid
         btn_startUpdate.grid(row = 3, column = 0, columnspan = 2, sticky = "we", padx = 1, pady = 1)
@@ -3324,7 +3512,7 @@ class updaterInterface(tk.Toplevel):
 
     def btn_startUpdate_callback(self):
 
-        if tkmsg.askyesno(title = dataHandler.titleVersion, message = dataHandler.lang_update_info) == False:
+        if tkmsg.askyesno(title = dataHandler.titleVersion, message = dataHandler.dict_lang["lang_update_info"]) == False:
 
             return False
 
@@ -3347,6 +3535,10 @@ class updaterInterface(tk.Toplevel):
                 dlPath = updateHandler.downloadRelease(releaseLatest)
 
         if dlPath == None:
+
+            closingUpdateProcessInterface()
+
+            tkmsg.showerror(title = dataHandler.titkeVersion, message = "Could not download update content! Please try again later!")
 
             return False
 
@@ -3383,16 +3575,17 @@ class updaterInterface(tk.Toplevel):
 
         dataHandler.readConfigINI()
 
-        cbt_updateSettings_experimentalVar.set(dataHandler.updaterExperimentalBuilds)
-        cbt_updateSettings_exportConfigVar.set(dataHandler.updaterExportConfig)
-        cbt_updateSettings_exportDatabaseVar.set(dataHandler.updaterExportDatabase)
-        cbt_updateSettings_createShortcutVar.set(dataHandler.updaterShortcut)
+        cbt_updateSettings_experimentalVar.set(dataHandler.dict_updateConfig["updaterexperimentalbuilds"])
+        cbt_updateSettings_exportConfigVar.set(dataHandler.dict_updateConfig["updaterexportconfig"])
+        cbt_updateSettings_exportDatabaseVar.set(dataHandler.dict_updateConfig["updaterexportdatabase"])
+        cbt_updateSettings_createShortcutVar.set(dataHandler.dict_updateConfig["updatershortcut"])
 
     def saveSettings(self):
 
-        dataHandler.updaterExperimentalBuilds = cbt_updateSettings_experimentalVar.get()
-        dataHandler.updaterExportConfig = cbt_updateSettings_exportConfigVar.get()
-        dataHandler.updaterExportDatabase = cbt_updateSettings_exportDatabaseVar.get()
+        dataHandler.dict_updateConfig["updaterexperimentalbuilds"] = cbt_updateSettings_experimentalVar.get()
+        dataHandler.dict_updateConfig["updaterexportconfig"] = cbt_updateSettings_exportConfigVar.get()
+        dataHandler.dict_updateConfig["updaterexportdatabase"] = cbt_updateSettings_exportDatabaseVar.get()
+        dataHandler.dict_updateConfig["updatershortcut"] = cbt_updateSettings_createShortcutVar.get()
 
         dataHandler.writeConfigINI()
 
@@ -3417,19 +3610,19 @@ class updaterInterface(tk.Toplevel):
 
         if releaseVersion == None:
 
-            lbl_updateInfo_state.configure(foreground = "red", text = dataHandler.lang_updateInfo_statusNone)
+            lbl_updateInfo_state.configure(foreground = "red", text = dataHandler.dict_lang["lang_updateInfo_statusNone"])
             btn_startUpdate.configure(state = "disabled")
 
         else:
 
             if releaseVersion > prgVersion:
 
-                lbl_updateInfo_state.configure(foreground = "green", text = dataHandler.lang_updateInfo_statusTrue)
+                lbl_updateInfo_state.configure(foreground = "green", text = dataHandler.dict_lang["lang_updateInfo_statusTrue"])
                 btn_startUpdate.configure(state = "enabled")
                 
             else:
 
-                lbl_updateInfo_state.configure(foreground = "black", text = dataHandler.lang_updateInfo_statusFalse)
+                lbl_updateInfo_state.configure(foreground = "black", text = dataHandler.dict_lang["lang_updateInfo_statusFalse"])
                 btn_startUpdate.configure(state = "disabled")
 
         ety_updateInfo_versionUsedVar.set(dataHandler.completeVersion)
@@ -3478,7 +3671,7 @@ class updaterInterface(tk.Toplevel):
         
         else:
 
-            txt_changelog.insert("end", dataHandler.lang_changlog_false)
+            txt_changelog.insert("end", dataHandler.dict_lang["lang_changlog_false"])
 
     def centerWindow(self):
 
@@ -3612,6 +3805,11 @@ def runSettingsInterface():
 def runUpdaterInterface():
 
     global ui_updater
+
+    global releaseLatest
+    global releaseExperimental
+
+    releaseLatest, releaseExperimental = updateHandler.getReleases()
 
     if ui_updater == None:
 

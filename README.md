@@ -10,6 +10,19 @@ This Program is only tested on a windows 10 OS with python 3.9.2 made to run as 
 
 # Changelog
 
+## Build 2.2.0
+
+- Additions
+  - Added a menubar
+
+- Changes
+  - Reworked the language selection system
+  - Reworked the file checking system
+
+- Fixed a bug in the updater which wouldn´t stop the update process when there is no update content to download
+- Fixed the language file check which caused crashes when the language file did not match the standart layout
+- Fixed extra spaces calculation
+
 ## Build 2.1.0
 
 *We're finally on GitHub! Yay!*

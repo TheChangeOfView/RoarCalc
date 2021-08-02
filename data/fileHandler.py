@@ -27,6 +27,13 @@ from tkinter import END
 from tkinter import messagebox as tkmsg
 from textwrap import wrap
 
+# ---- #
+
+textboxMaxChar = 26
+textboxMaxLines = 15
+
+# ---- #
+
 inputID = 0
 inputType = "ERR"
 inputPTO = "ERR"
@@ -111,6 +118,8 @@ packingWidth = 0
 packingHeight = 0
 packingDepth = 0
 
+textboxContent = None
+
 def createPDF():
 
     getInputs()
@@ -118,7 +127,7 @@ def createPDF():
 
     if merge_pdfs(dataHandler.fPth_formOrig, dataHandler.fPth_formOvrl, inputID) == True:
 
-        if dataHandler.openPDF == True:
+        if dataHandler.dict_config["openpdf"] == True:
 
             try:
 
@@ -128,7 +137,7 @@ def createPDF():
 
                 pass
 
-        if dataHandler.printPDF == True:
+        if dataHandler.dict_config["printpdf"] == True:
 
             try:
 
@@ -228,6 +237,8 @@ def getInputs():
     global packingHeight
     global packingDepth
 
+    global textboxContent
+
     # ID
     inputID = uiHandler.ety_genInfo_orderIDVar.get()
 
@@ -237,11 +248,11 @@ def getInputs():
     # Push-To-Open
     if uiHandler.cbt_genInfo_ptoVar.get() == 1:
 
-        inputPTO = dataHandler.lang_general_yes
+        inputPTO = dataHandler.dict_lang["lang_general_yes"]
 
     else:
 
-        inputPTO = dataHandler.lang_general_no
+        inputPTO = dataHandler.dict_lang["lang_general_no"]
 
     # Color
     inputColor = uiHandler.ety_color_selectedVar.get()
@@ -258,7 +269,7 @@ def getInputs():
     # Light
     if uiHandler.cbb_corInfo_light.current() == 0:
 
-        inputLight = dataHandler.lang_general_without
+        inputLight = dataHandler.dict_lang["lang_general_without"]
 
     else:
 
@@ -267,11 +278,11 @@ def getInputs():
     # Indirect Light
     if uiHandler.cbt_corInfo_indLightVar.get() == 1:
         
-        inputIndirectLight = dataHandler.lang_general_with
+        inputIndirectLight = dataHandler.dict_lang["lang_general_with"]
 
     else:
 
-        inputIndirectLight = dataHandler.lang_general_without
+        inputIndirectLight = dataHandler.dict_lang["lang_general_without"]
 
     # Doors
     inputDoors = uiHandler.ety_corInfo_doorVar.get()
@@ -362,6 +373,9 @@ def getInputs():
     packingHeight = uiHandler.ety_packaging_heightVar.get()
     packingDepth = uiHandler.ety_packaging_depthVar.get()
     
+    # Textbox
+    textboxContent = uiHandler.txt_infoBox.get("1.0", END)[:(len(uiHandler.txt_infoBox.get("1.0", END)) - 1)]
+    
 def getCuttingsTypeCorpus(combobox):
 
     output = "ERR"
@@ -372,31 +386,31 @@ def getCuttingsTypeCorpus(combobox):
 
     elif combobox.current() == 1:
 
-        output = dataHandler.lang_data_corpusMeasure_type_ground_short
+        output = dataHandler.dict_lang["lang_data_corpusMeasure_type_ground_short"]
 
     elif combobox.current() == 2:
 
-        output = dataHandler.lang_data_corpusMeasure_type_side_short
+        output = dataHandler.dict_lang["lang_data_corpusMeasure_type_side_short"]
 
     elif combobox.current() == 3:
 
-        output = dataHandler.lang_data_corpusMeasure_type_middleground_short
+        output = dataHandler.dict_lang["lang_data_corpusMeasure_type_middleground_short"]
 
     elif combobox.current() == 4:
 
-        output = dataHandler.lang_data_corpusMeasure_type_middleside_short
+        output = dataHandler.dict_lang["lang_data_corpusMeasure_type_middleside_short"]
 
     elif combobox.current() == 5:
 
-        output = dataHandler.lang_data_corpusMeasure_type_MF_ground_short
+        output = dataHandler.dict_lang["lang_data_corpusMeasure_type_MF_ground_short"]
 
     elif combobox.current() == 6:
 
-        output = dataHandler.lang_data_corpusMeasure_type_MF_side_short
+        output = dataHandler.dict_lang["lang_data_corpusMeasure_type_MF_side_short"]
 
     elif combobox.current() == 7:
 
-        output = dataHandler.lang_data_corpusMeasure_type_backwall_short
+        output = dataHandler.dict_lang["lang_data_corpusMeasure_type_backwall_short"]
 
     return output
 
@@ -573,9 +587,7 @@ def createOverlayForm():
 
     # --------------------------------------------------------------------------------
 
-    textboxContent = uiHandler.txt_infoBox.get("1.0", END)[:(len(uiHandler.txt_infoBox.get("1.0", END)) - 1)]
-
-    addTextFieldToCanvas(388, 490, textboxContent, dataHandler.fnt_Normal, 12, pdfFileCanvas, 22)
+    addTextFieldToCanvas(388, 490, textboxContent, dataHandler.fnt_Normal, 10, pdfFileCanvas, textboxMaxChar)
 
     pdfFileCanvas.save()
 
@@ -628,9 +640,9 @@ def deleteFile(fileDir):
 
 def runFile(fileDir):
 
-    if dataHandler.openPDF == True:
+    if dataHandler.dict_config["openpdf"] == True:
 
-        if dataHandler.printPDF == True:
+        if dataHandler.dict_config["printpdf"] == True:
 
             os.startfile(fileDir, "print")
 
@@ -669,13 +681,13 @@ def merge_pdfs(form_pdf, overlay_pdf, outputName):
 
         os.mkdir(outputFolder)
 
-    if dataHandler.saveDir == "":
+    if dataHandler.dict_config["savedir"] == "":
 
         dataHandler.fPth_output = os.path.join(outputFolder, (outputName + ".pdf"))
 
     else:
 
-        dataHandler.fPth_output = os.path.join(dataHandler.saveDir, (outputName + ".pdf"))
+        dataHandler.fPth_output = os.path.join(dataHandler.dict_config["savedir"], (outputName + ".pdf"))
 
     file_orig = PdfReader(form_pdf)
     file_ovrl = PdfReader(overlay_pdf)
@@ -686,7 +698,7 @@ def merge_pdfs(form_pdf, overlay_pdf, outputName):
 
         if os.path.isfile(dataHandler.fPth_output) == True:
 
-            if tkmsg.askyesno(title = dataHandler.titleVersion, message = dataHandler.lang_msg_pdfoverride) == True:
+            if tkmsg.askyesno(title = dataHandler.titleVersion, message = dataHandler.dict_lang["lang_msg_pdfoverride"]) == True:
 
                 deleteFile(dataHandler.fPth_output)
 

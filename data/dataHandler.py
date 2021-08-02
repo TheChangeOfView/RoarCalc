@@ -11,7 +11,7 @@
 import os
 import pathlib
 from configparser import ConfigParser
-from tkinter import messagebox as tkmsg
+import tkinter as tk
 import shutil
 
 # -------------------------------------- #
@@ -20,10 +20,8 @@ import shutil
 
 title = "RoarCalc"
 version = 2
-subversion = 1
-subsubversion = 2
-configIsCompatible = True
-databaseIsCompatible = True
+subversion = 2
+subsubversion = 0
 
 gitPath = "https://github.com/TheChangeOfView/RoarCalc"
 gitReleasePath = "https://api.github.com/repos/TheChangeOfView/RoarCalc/releases"
@@ -37,244 +35,238 @@ updaterMaxAttempts = 20
 #      Language Variables                #
 # -------------------------------------- #
 
-lang_general_width = "Width"
-lang_general_height = "Height"
-lang_general_depth = "Depth"
-lang_general_length = "Length"
-lang_general_count = "Count"
-lang_general_type = "Type"
-lang_general_override = "Enable Override"
-lang_general_position = "Pos."
-lang_general_no = "No"
-lang_general_yes = "Yes"
-lang_general_none = "- - -"
-lang_general_with = "With"
-lang_general_without = "Without"
-lang_general_ID = "ID"
-lang_general_name = "Name"
+langFiles = {}
 
-lang_frmGeneralInfo = "General Info"
-lang_genInfo_orderID = "Order ID"
-lang_genInfo_date = "Date"
-lang_genInfo_pto = "Push-To-Open"
-lang_genInfo_specials = "Specials"
-
-lang_frmMeasure = "Measurements"
-
-lang_frmColor = "Colorcode"
-lang_color_aluminum = "Aluminum"
-lang_color_unicolor = "Unicolor"
-lang_color_wood = "Wooden Replication"
-lang_color_material = "Material Replication"
-
-lang_frmCorpusInfo = "Corpus Info"
-lang_corInfo_light = "Light"
-lang_corInfo_indLight = "Indirect Light"
-lang_corInfo_door = "Doors Amount"
-lang_corInfo_shelf = "Shelfs Amount"
-lang_corInfo_overhangUpper = "Overhang Upper"
-lang_corInfo_overhangLower = "Overhang Lower"
-
-lang_frmExtra = "Extra Spaces"
-lang_extra_measure = "Width / Height"
-lang_extra_covered = "Covered"
-
-lang_frmCorpusMeasure = "Corpus Measurements"
-
-lang_frmGlassMeasure = "Glass / Mirror Measurements"
-
-lang_frmPackaging = "Packaging"
-
-lang_frmInfo = "Info"
-
-lang_button_calc = "Calculate"
-lang_button_reset = "Reset"
-lang_button_create = "Create PDF"
-lang_button_load = "Load RC-File"
-lang_button_settings = "Settings"
-lang_button_quit = "Quit"
-lang_button_save = "Save"
-lang_button_close = "Close"
-lang_button_update = "Check for updates"
-lang_button_updateStart = "Install update"
-lang_button_github = "View on GitHub"
-
-lang_frmPrgInfo = "Program Info"
-lang_prgInfo_contact = "Contact Us"
-lang_prgInfo_git = "Find us on GitHub"
-
-lang_frmFileHandling = "File Handling"
-lang_fileHandling_saveDir = "Save File at:"
-lang_fileHandling_calculate = "Calculate before creating PDF"
-lang_fileHandling_RCFile = "Save RC-File of project"
-lang_fileHandling_openPDF = "Open PDF after creation"
-lang_fileHandling_printPDF = "Print PDF after creation"
-lang_fileHandling_files = "Open Libaryfiles Folder"
-
-lang_frmMatPresets = "Material Thickness (in mm)"
-lang_matPresets_packaging = "Packaging"
-lang_matPresets_wood = "Wood"
-lang_matPresets_aluminum = "Aluminum"
-lang_matPresets_LEDFrontal = "Frontal LED Profile"
-lang_matPresets_LEDInternal = "Internal LED Profile"
-
-lang_frmOther = "Other"
-lang_other_autoUpdate = "Auto-updatesearch"
-lang_other_language = "Language file directory"
-lang_other_info = "Restart to change language"
-
-lang_frmUpdateInfo = "Update Info"
-lang_updateInfo_statusNone = "Could not check for updates"
-lang_updateInfo_statusTrue = "New build available!"
-lang_updateInfo_statusFalse = "You got the latest build!"
-lang_updateInfo_versionUsed = "Current build:"
-lang_updateInfo_versionLatest = "Latest build:"
-
-lang_frmChangelog = "Changelog"
-lang_changlog_false = "No Changelog found!"
-
-lang_frmUpdateSettings = "Settings"
-lang_updateSettings_experimental = "Use experimental Builds"
-lang_updateSettings_exportConfig = "Export configurations to new version"
-lang_updateSettings_exportDatabase = "Export database to new version"
-lang_updateSettings_shortcut = "Create desktop-shortcut after installation"
-
-lang_msg_rcoverride = "An associated RC-File already exists.\nDo you want to replace it?"
-lang_msg_pdfoverride = "An associated PDF-File already exists.\nDo you want to replace it?"
-lang_msg_doorAmountInvalid = "Calculating more then four doors is leading to misscalculations in most cases! Do you wish to calculate anyway?"
-
-lang_data_corInfo_light_warm = "Warm"
-lang_data_corInfo_light_neutral = "Neutral"
-lang_data_corInfo_light_cct = "CCT"
-lang_data_corInfo_light_rgb = "RGB"
-
-lang_data_corpusMeasure_type_ground = "Ground"
-lang_data_corpusMeasure_type_side = "Side"
-lang_data_corpusMeasure_type_middleground = "Middleground"
-lang_data_corpusMeasure_type_middleside = "Middleside"
-lang_data_corpusMeasure_type_MF_ground = "MF Ground"
-lang_data_corpusMeasure_type_MF_side = "MF Side"
-lang_data_corpusMeasure_type_backwall = "Backwall"
-
-lang_data_corpusMeasure_type_ground_short = "G"
-lang_data_corpusMeasure_type_side_short = "S"
-lang_data_corpusMeasure_type_middleground_short = "MG"
-lang_data_corpusMeasure_type_middleside_short = "MS"
-lang_data_corpusMeasure_type_MF_ground_short = "MF G"
-lang_data_corpusMeasure_type_MF_side_short = "MF S"
-lang_data_corpusMeasure_type_backwall_short = "BW"
-
-lang_data_extra_type_1vert = "1 sided vertical"
-lang_data_extra_type_2vert = "2 sided vertical"
-lang_data_extra_type_1hori = "1 sided horizontal"
-
-lang_data_genInfo_specials_LEDfrontal = "LED Frontal"
-lang_data_genInfo_specials_LEDinternal = "LED Internal"
-
-lang_data_genInfo_type_surface = "SU"
-lang_data_genInfo_type_concealed = "CO"
-lang_data_genInfo_type_concealedMF = "COMF"
-
-lang_data_glassMeasure_type_mirror3 = "3mm Mirror"
-lang_data_glassMeasure_type_mirror6 = "6mm Mirror"
-lang_data_glassMeasure_type_glass6 = "6mm Glass"
-
-lang_error_calculation = "Calculation Error:"
-lang_error_inputs = "Missing requirements or invalid input"
-
-lang_calc_success = "Calculation successed!"
-lang_calc_failed = "Calculation failed!"
-lang_creation_success = "File creation successed!"
-lang_creation_failed = "File creation failed!"
-
-lang_update_info = "RoarCalc will now install the latest version and restart automatically!\nThis Process can take a while!\n\nDo you want to continue?"
+dict_lang = {
+    "lang_general_width"                                : "Width",
+    "lang_general_height"                               : "Height",
+    "lang_general_depth"                                : "Depth",
+    "lang_general_length"                               : "Length",
+    "lang_general_count"                                : "Count",
+    "lang_general_type"                                 : "Type",
+    "lang_general_override"                             : "Enable Override",
+    "lang_general_position"                             : "Pos.",
+    "lang_general_no"                                   : "No",
+    "lang_general_yes"                                  : "Yes",
+    "lang_general_none"                                 : "- - -",
+    "lang_general_with"                                 : "With",
+    "lang_general_without"                              : "Without",
+    "lang_general_ID"                                   : "ID",
+    "lang_general_name"                                 : "Name",
+    "lang_frmGeneralInfo"                               : "General Info",
+    "lang_genInfo_orderID"                              : "Order ID",
+    "lang_genInfo_date"                                 : "Date",
+    "lang_genInfo_pto"                                  : "Push-To-Open",
+    "lang_genInfo_specials"                             : "Specials",
+    "lang_frmMeasure"                                   : "Measurements",
+    "lang_frmColor"                                     : "Colorcode",
+    "lang_color_aluminum"                               : "Aluminum",
+    "lang_color_unicolor"                               : "Unicolor",
+    "lang_color_wood"                                   : "Wooden Replication",
+    "lang_color_material"                               : "Material Replication",
+    "lang_frmCorpusInfo"                                : "Corpus Info",
+    "lang_corInfo_light"                                : "Light",
+    "lang_corInfo_indLight"                             : "Indirect Light",
+    "lang_corInfo_door"                                 : "Doors Amount",
+    "lang_corInfo_shelf"                                : "Shelfs Amount",
+    "lang_corInfo_overhangUpper"                        : "Overhang Upper",
+    "lang_corInfo_overhangLower"                        : "Overhang Lower",
+    "lang_frmExtra"                                     : "Extra Spaces",
+    "lang_extra_measure"                                : "Width / Height",
+    "lang_extra_covered"                                : "Covered",
+    "lang_frmCorpusMeasure"                             : "Corpus Measurements",
+    "lang_frmGlassMeasure"                              : "Glass / Mirror Measurements",
+    "lang_frmPackaging"                                 : "Packaging",
+    "lang_frmInfo"                                      : "Info",
+    "lang_button_calc"                                  : "Calculate",
+    "lang_button_reset"                                 : "Reset",
+    "lang_button_create"                                : "Create PDF",
+    "lang_button_load"                                  : "Load RC-File",
+    "lang_button_settings"                              : "Settings",
+    "lang_button_quit"                                  : "Quit",
+    "lang_button_save"                                  : "Save",
+    "lang_button_close"                                 : "Close",
+    "lang_button_update"                                : "Check for updates",
+    "lang_button_updateStart"                           : "Install update",
+    "lang_button_github"                                : "View on GitHub",
+    "lang_frmPrgInfo"                                   : "Program Info",
+    "lang_prgInfo_contact"                              : "Contact Us",
+    "lang_prgInfo_git"                                  : "Find us on GitHub",
+    "lang_frmFileHandling"                              : "File Handling",
+    "lang_fileHandling_saveDir"                         : "Save File at:",
+    "lang_fileHandling_calculate"                       : "Calculate before creating PDF",
+    "lang_fileHandling_RCFile"                          : "Save RC-File of project",
+    "lang_fileHandling_openPDF"                         : "Open PDF after creation",
+    "lang_fileHandling_printPDF"                        : "Print PDF after creation",
+    "lang_fileHandling_files"                           : "Open Libaryfiles Folder",
+    "lang_frmMatPresets"                                : "Material Thickness (in mm)",
+    "lang_matPresets_packaging"                         : "Packaging",
+    "lang_matPresets_wood"                              : "Wood",
+    "lang_matPresets_aluminum"                          : "Aluminum",
+    "lang_matPresets_LEDFrontal"                        : "Frontal LED Profile",
+    "lang_matPresets_LEDInternal"                       : "Internal LED Profile",
+    "lang_frmOther"                                     : "Other",
+    "lang_other_autoUpdate"                             : "Auto-updatesearch",
+    "lang_other_language"                               : "Language",
+    "lang_other_info"                                   : "Restart to change language",
+    "lang_frmUpdateInfo"                                : "Update Info",
+    "lang_updateInfo_statusNone"                    	: "Could not check for updates",
+    "lang_updateInfo_statusTrue"                    	: "New build available!",
+    "lang_updateInfo_statusFalse"                   	: "You got the latest build!",
+    "lang_updateInfo_versionUsed"                   	: "Current build:",
+    "lang_updateInfo_versionLatest"                 	: "Latest build:",
+    "lang_frmChangelog"                                 : "Changelog",
+    "lang_changlog_false"                               : "No Changelog found!",
+    "lang_frmUpdateSettings"                            : "Settings",
+    "lang_updateSettings_experimental"                  : "Use experimental Builds",
+    "lang_updateSettings_exportConfig"                  : "Export configurations to new version",
+    "lang_updateSettings_exportDatabase"                : "Export database to new version",
+    "lang_updateSettings_shortcut"                      : "Create desktop-shortcut after installation",
+    "lang_msg_rcoverride"                               : "An associated RC-File already exists.\nDo you want to replace it?",
+    "lang_msg_pdfoverride"                              : "An associated PDF-File already exists.\nDo you want to replace it?",
+    "lang_msg_doorAmountInvalid"                        : "Calculating more then four doors is leading to misscalculations in most cases! Do you wish to calculate anyway?",
+    "lang_data_corInfo_light_warm"                      : "Warm",
+    "lang_data_corInfo_light_neutral"                   : "Neutral",
+    "lang_data_corInfo_light_cct"                       : "CCT",
+    "lang_data_corInfo_light_rgb"                       : "RGB",
+    "lang_data_corpusMeasure_type_ground"               : "Ground",
+    "lang_data_corpusMeasure_type_side"                 : "Side",
+    "lang_data_corpusMeasure_type_middleground"         : "Middleground",
+    "lang_data_corpusMeasure_type_middleside"           : "Middleside",
+    "lang_data_corpusMeasure_type_MF_ground"            : "MF Ground",
+    "lang_data_corpusMeasure_type_MF_side"              : "MF Side",
+    "lang_data_corpusMeasure_type_backwall"             : "Backwall",
+    "lang_data_corpusMeasure_type_ground_short"         : "G",
+    "lang_data_corpusMeasure_type_side_short"           : "S",
+    "lang_data_corpusMeasure_type_middleground_short"   : "MG",
+    "lang_data_corpusMeasure_type_middleside_short"     : "MS",
+    "lang_data_corpusMeasure_type_MF_ground_short"      : "MF G",
+    "lang_data_corpusMeasure_type_MF_side_short"        : "MF S",
+    "lang_data_corpusMeasure_type_backwall_short"       : "BW",
+    "lang_data_extra_type_1vert"                        : "1 sided vertical",
+    "lang_data_extra_type_2vert"                        : "2 sided vertical",
+    "lang_data_extra_type_1hori"                        : "1 sided horizontal",
+    "lang_data_genInfo_specials_LEDfrontal"             : "LED Frontal",
+    "lang_data_genInfo_specials_LEDinternal"            : "LED Internal",
+    "lang_data_genInfo_type_surface"                    : "SU",
+    "lang_data_genInfo_type_concealed"                  : "CO",
+    "lang_data_genInfo_type_concealedMF"                : "COMF",
+    "lang_data_glassMeasure_type_mirror3"               : "3mm Mirror",
+    "lang_data_glassMeasure_type_mirror6"               : "6mm Mirror",
+    "lang_data_glassMeasure_type_glass6"                : "6mm Glass",
+    "lang_error_calculation"                            : "Calculation Error:",
+    "lang_error_inputs"                                 : "Missing requirements or invalid input",
+    "lang_calc_success"                                 : "Calculation successed!",
+    "lang_calc_failed"                                  : "Calculation failed!",
+    "lang_creation_success"                             : "File creation successed!",
+    "lang_creation_failed"                              : "File creation failed!",
+    "lang_update_info"                                  : "RoarCalc will now install the latest version and restart automatically!\nThis Process can take a while!\n\nDo you want to continue?",
+    "lang_textbox_info"                                 : "The info-text is longer then the PDF can handle properly to fit inside the frame! Do you still wish to continue?",
+    "lang_menu_file"                                    : "File",
+    "lang_menu_reset"                                   : "Reset",
+    "lang_menu_open"                                    : "Open..",
+    "lang_menu_save"                                    : "Save",
+    "lang_menu_saveas"                                  : "Save as..",
+    "lang_menu_quit"                                    : "Quit",
+    "lang_menu_edit"                                    : "Edit",
+    "lang_menu_calculate"                               : "Calculate",
+    "lang_menu_create"                                  : "Create PDF",
+    "lang_menu_opensave"                                : "Open Save Directory",
+    "lang_menu_settings"                                : "Settings",
+    "lang_menu_help"                                    : "Help",
+    "lang_menu_github"                                  : "View on GitHub",
+    "lang_menu_updates"                                 : "Check for updates"
+}
 
 # -------------------------------------- #
 #      Tooltip Variables                 #
 # -------------------------------------- #
 
 dict_tooltips = {
-    0  :     "ERROR",
+    "tool_error"  :     "ERROR",
 
     # general info
-    1  :     "The given order identification number of your project",
-    2  :     "The creation date stamp (will take the set date of the running OS)",
-    3  :     "The way the corpus is mounted on the wall (SU = Surface, CO = Concealed, COMF = Concealed with mounting frame)",
-    4  :     "Enable if your project has Push-To-Open doors",
-    5  :     "Changes the calculation to special kinds of corpus",
+    "tool_genInfo_orderID"          :     "The given order identification number of your project",
+    "tool_genInfo_date"             :     "The creation date stamp (will take the set date of the running OS)",
+    "tool_genInfo_type"             :     "The way the corpus is mounted on the wall (SU = Surface, CO = Concealed, COMF = Concealed with mounting frame)",
+    "tool_genInfo_pto"              :     "Enable if your project has Push-To-Open doors",
+    "tool_genInfo_specials"         :     "Changes the calculation to special kinds of corpus",
 
     # measure
-    6  :     "The main width in mm of the corpus",
-    7  :     "The main height in mm of the corpus",
-    8  :     "The main depth in mm of the corpus",
+    "tool_measure_width"            :     "The main width in mm of the corpus",
+    "tool_measure_height"           :     "The main height in mm of the corpus",
+    "tool_measure_depth"            :     "The main depth in mm of the corpus",
 
     # corpus info
-    9  :     "Set the light color",
-    10 :     "Enable if your project has indirect light",
-    11 :     "The amount of doors",
-    12 :     "The amount of shelfs per section",
-    13 :     "The overhang in mm on the top-end",
-    14 :     "The overhang in mm on the lower-end",
+    "tool_corInfo_light"            :     "Set the light color",
+    "tool_corInfo_indLight"         :     "Enable if your project has indirect light",
+    "tool_corInfo_doors"            :     "The amount of doors",
+    "tool_corInfo_shelfs"           :     "The amount of shelfs per section",
+    "tool_corInfo_overhangUpper"    :     "The overhang in mm on the top-end",
+    "tool_corInfo_overhangLower"    :     "The overhang in mm on the lower-end",
 
     # extra space
-    15 :     "Add extra sections",
-    16 :     "The given space for the sections",
-    17 :     "Enable if the extra sections are covered with mirrors",
+    "tool_extra_type"               :     "Add extra sections",
+    "tool_extra_measure"            :     "The given space for the sections",
+    "tool_extra_covered"            :     "Enable if the extra sections are covered with mirrors",
 
     # color
-    18 :     "Select the color your project should have",
-    19 :     "Shows the selected color",
+    "tool_color_select"             :     "Select the color your project should have",
+    "tool_color_showSelected"       :     "Shows the selected color",
     
     # corpus measurement
-    20 :     "The measurements of the given board",
+    "tool_corpusMeasurement"        :     "The measurements of the given board",
 
     # glass measurements
-    21 :     "The measurements of the given glass / mirror",
+    "tool_glassMeasurement"         :     "The measurements of the given glass / mirror",
 
     # packaging
-    22 :     "The width in mm of the packaging",
-    23 :     "The height in mm of the packaging",
-    24 :     "The depth in mm of the packaging",
+    "tool_packaging_width"          :     "The width in mm of the packaging",
+    "tool_packaging_height"         :     "The height in mm of the packaging",
+    "tool_packaging_depth"          :     "The depth in mm of the packaging",
 
     # buttons
-    25 :     "Calculate measurements",
-    26 :     "Reset all inputs and measurements",
-    27 :     "Create PDF-File (Also if enabled: calculate beforehand, open PDF-file afterwards, print PDF-file and create RC-file)",
-    28 :     "Load an saved RC-File",
-    29 :     "Open the settings-menu",
-    30 :     "Quit the Application",
+    "tool_buttons_calc"             :     "Calculate measurements",
+    "tool_buttons_reset"            :     "Reset all inputs and measurements",
+    "tool_buttons_create"           :     "Create PDF-File (Also if enabled: calculate beforehand, open PDF-file afterwards, print PDF-file and create RC-file)",
+    "tool_buttons_load"             :     "Load an saved RC-File",
+    "tool_buttons_settings"         :     "Open the settings-menu",
+    "tool_buttons_quit"             :     "Quit the Application",
 
     # other
-    31 :     "Enable override measurements (sections with enabled override, will not be overriden by calculation)",
+    "tool_other_override"           :     "Enable override measurements (sections with enabled override, will not be overriden by calculation)",
 
     # text box
-    32 :     "Add custom info text to display in the PDF-File"
+    "tool_textbox"                  :     "Add custom info text to display in the PDF-File"
 }
 
 # -------------------------------------- #
 #      Settings                          #
 # -------------------------------------- #
 
-saveDir = ""
-calculateBeforeCreate = True
-createRCFile = True
-openPDF = True
-printPDF = False
-packingMatThickness = 100
-woodenThickness = 19
-aluminiumThickness = 16
-LEDThicknessFrontal = 13
-LEDThicknessInternal = 9
-activeLang = ""
+dict_config = {
+    "savedir"                   : "",
+    "calculatebeforecreate"     : True,
+    "creatercfile"              : True,
+    "openpdf"                   : True,
+    "printpdf"                  : False,
+    "packingmatthickness"       : 100,
+    "woodenthickness"           : 19,
+    "aluminumthickness"         : 16,
+    "ledthicknessfrontal"       : 13,
+    "ledthicknessinternal"      : 9,
+    "activelang"                : "Program Standart",
+    "woodensubtraction"         : 2.5,
+    "aluminumsubtraction"       : 10.0
+}
 
-woodenSubtraction = 2.5
-aluminiumSubtraction = 10
-
-autoaskUpdate = True
-updaterExperimentalBuilds = False
-updaterExportConfig = True
-updaterExportDatabase = True
-updaterShortcut = True
+dict_updateConfig = {
+    "autoaskupdate"             : True,
+    "updaterexperimentalbuilds" : False,
+    "updaterexportconfig"       : True,
+    "updaterexportdatabase"     : True,
+    "updatershortcut"           : True
+}
 
 # -------------------------------------- #
 #      File Pathes                       #
@@ -289,8 +281,10 @@ if rootFile[len(rootFile) - 1] == "library.zip":
     rootDir = pathlib.Path(rootDir).parent
 
 filesDir = os.path.join(rootDir, "files")
+langDir = os.path.join(rootDir, "lang")
 imgDir = os.path.join(filesDir, "img")
 databaseDir = os.path.join(filesDir, "database")
+tmpDir = os.path.join(rootDir, "tmp")
 
 fPth_imageAluminum = os.path.join(imgDir,"img_color_aluminum.png")
 fPth_imageUnicolor = os.path.join(imgDir, "img_color_unicolor.png")
@@ -321,13 +315,60 @@ fnt_NormalTTF = "Vera.ttf"
 fnt_Bold = "Vera-Bold"
 fnt_BoldTTF = "VeraBd.ttf"
 
-fold_tmp = "./tmp"
-
 # -------------------------------------- #
 #      Functions                         #
 # -------------------------------------- #
 
+# --- initial routine ---
+
+def initRoutine():
+
+    missing = checkFiles()
+
+    if missing != None:
+
+        root = tk.Tk()
+        root.withdraw()
+
+        tk.messagebox.showerror(title = titleVersion, message = "Fatal Error: Missing: " + missing)
+
+        root.destroy()
+
+        return False
+
+    else:
+
+        if checkConfigINI() == False:
+
+            root = tk.Tk()
+            root.withdraw()
+
+            tk.messagebox.showerror(title = titleVersion, message = "Error: config file is corrupted! Settings has been reseted to standart!")
+            
+            root.destroy()
+            
+            writeConfigINI()
+
+        else:
+
+            readConfigINI()
+
+        getLanguageFiles()
+
+        if getActiveLanguageAndCheck() == False:
+
+            root = tk.Tk()
+            root.withdraw()
+
+            tk.messagebox.showerror(title = titleVersion, message = "Error: language file is corrupted! Used Language has been reseted to standart!")
+
+            root.destroy()
+
+        return True
+
 def checkFiles():
+
+    missing = None
 
     allDir = [
         filesDir,
@@ -342,448 +383,264 @@ def checkFiles():
             dirPath = os.path.split(i)
             dirName = dirPath[len(dirPath) - 1]
 
-            return False, dirName, True
+            missing = dirName
 
-    allFiles = [
-        fPth_imageAluminum,
-        fPth_imageUnicolor,
-        fPth_imageWood,
-        fPth_imageMaterial,
-        fPth_codesAluminum,
-        fPth_codesUnicolor,
-        fPth_codesWood,
-        fPth_codesMaterial,
-        fPth_logo,
-        fPth_logoImg,
-        fPth_config,
-        fPth_formOrig,
-        fPth_fnt_NormalTTF,
-        fPth_fnt_BoldTTF
-    ]
+            break
 
-    for i in allFiles:
-        
-        if os.path.isfile(i) == False:
+    if missing != None: # skip if already failed
 
-            filePath = os.path.split(i)
-            fileName = filePath[len(filePath) - 1]
+        allFiles = [
+            fPth_imageAluminum,
+            fPth_imageUnicolor,
+            fPth_imageWood,
+            fPth_imageMaterial,
+            fPth_codesAluminum,
+            fPth_codesUnicolor,
+            fPth_codesWood,
+            fPth_codesMaterial,
+            fPth_logo,
+            fPth_logoImg,
+            fPth_config,
+            fPth_formOrig,
+            fPth_fnt_NormalTTF,
+            fPth_fnt_BoldTTF
+        ]
+
+        for i in allFiles:
             
-            return False, fileName, False
+            if os.path.isfile(i) == False:
 
-    return True, None, None
+                filePath = os.path.split(i)
+                fileName = filePath[len(filePath) - 1]
 
-def getLanguage():
+                missing = fileName
 
-    checkLanguage()
+                break
 
-    if activeLang != "":
+    return missing
 
-        readLangFile(activeLang)
+# --- language
 
-def checkLanguage(onlyCheck = False):
+def getLanguageFiles():
 
-    global activeLang
+    if os.path.isdir(langDir) == False:
 
-    if activeLang != "":
+        return False
 
-        if os.path.isfile(activeLang) == False:
+    fileList = os.listdir(langDir)
 
-            activeLang = ""
+    for file in fileList:
 
-            if onlyCheck == False:
+        fileSplit = file.split(".")
+
+        if fileSplit[len(fileSplit) - 1] == "rcl":
+
+            filePath = os.path.join(langDir, file)
+
+            try:
+
+                lang = ConfigParser()
+
+                lang.read(filePath, "UTF-8")
+
+                info = lang["info"]
+
+                langName = info["langName"].replace('"',"")
+
+                langFiles[langName] = file
+
+            except KeyError:
+
+                pass
+
+def getActiveLanguageAndCheck():
+
+    global dict_config
+
+    if dict_config["activelang"] != "Program Standart":
+
+        try:
+
+            langFile = os.path.join(langDir, langFiles[dict_config["activelang"]])
+
+            if checkLangFile(langFile) == False:
+
+                dict_config["activelang"] = "Program Standart"
 
                 writeConfigINI()
 
-def readLangFile(langFile):
+                return False
 
-    global lang_general_width
-    global lang_general_height
-    global lang_general_depth
-    global lang_general_length
-    global lang_general_count
-    global lang_general_type
-    global lang_general_override
-    global lang_general_position
-    global lang_general_no
-    global lang_general_yes
-    global lang_general_none
-    global lang_general_with
-    global lang_general_without
-    global lang_general_ID
-    global lang_general_name
-    global lang_frmGeneralInfo
-    global lang_genInfo_orderID
-    global lang_genInfo_date
-    global lang_genInfo_pto
-    global lang_genInfo_specials
-    global lang_frmColor
-    global lang_color_aluminum
-    global lang_color_unicolor
-    global lang_color_wood
-    global lang_color_material
-    global lang_frmMeasure
-    global lang_frmCorpusInfo
-    global lang_corInfo_light
-    global lang_corInfo_indLight
-    global lang_corInfo_door
-    global lang_corInfo_shelf
-    global lang_corInfo_overhangUpper
-    global lang_corInfo_overhangLower
-    global lang_frmExtra
-    global lang_extra_measure
-    global lang_extra_covered
-    global lang_frmCorpusMeasure
-    global lang_frmGlassMeasure
-    global lang_frmPackaging
-    global lang_frmInfo
-    global lang_button_calc
-    global lang_button_reset
-    global lang_button_create
-    global lang_button_load
-    global lang_button_settings
-    global lang_button_quit
-    global lang_button_save
-    global lang_button_close
-    global lang_button_update
-    global lang_button_updateStart
-    global lang_button_github
-    global lang_frmPrgInfo
-    global lang_prgInfo_contact
-    global lang_prgInfo_git
-    global lang_frmFileHandling
-    global lang_fileHandling_saveDir
-    global lang_fileHandling_calculate
-    global lang_fileHandling_RCFile
-    global lang_fileHandling_openPDF
-    global lang_fileHandling_printPDF
-    global lang_fileHandling_files
-    global lang_frmMatPresets
-    global lang_matPresets_packaging
-    global lang_matPresets_wood
-    global lang_matPresets_aluminum
-    global lang_matPresets_LEDFrontal
-    global lang_matPresets_LEDInternal
-    global lang_frmOther
-    global lang_other_autoUpdate
-    global lang_other_language
-    global lang_other_info
-    global lang_frmUpdateInfo
-    global lang_updateInfo_statusNone
-    global lang_updateInfo_statusTrue
-    global lang_updateInfo_statusFalse
-    global lang_updateInfo_versionUsed
-    global lang_updateInfo_versionLatest
-    global lang_frmChangelog
-    global lang_changlog_false
-    global lang_frmUpdateSettings
-    global lang_updateSettings_experimental
-    global lang_updateSettings_exportConfig
-    global lang_updateSettings_exportDatabase
-    global lang_updateSettings_shortcut
-    global lang_msg_rcoverride
-    global lang_msg_pdfoverride
-    global lang_msg_doorAmountInvalid
-    global lang_data_corInfo_light_warm
-    global lang_data_corInfo_light_neutral
-    global lang_data_corInfo_light_cct
-    global lang_data_corInfo_light_rgb
-    global lang_data_corpusMeasure_type_ground
-    global lang_data_corpusMeasure_type_side
-    global lang_data_corpusMeasure_type_middleground
-    global lang_data_corpusMeasure_type_middleside
-    global lang_data_corpusMeasure_type_MF_ground
-    global lang_data_corpusMeasure_type_MF_side
-    global lang_data_corpusMeasure_type_backwall
-    global lang_data_corpusMeasure_type_ground_short
-    global lang_data_corpusMeasure_type_side_short
-    global lang_data_corpusMeasure_type_middleground_short
-    global lang_data_corpusMeasure_type_middleside_short
-    global lang_data_corpusMeasure_type_MF_ground_short
-    global lang_data_corpusMeasure_type_MF_side_short
-    global lang_data_corpusMeasure_type_backwall_short
-    global lang_data_extra_type_1vert
-    global lang_data_extra_type_2vert
-    global lang_data_extra_type_1hori
-    global lang_data_genInfo_specials_LEDfrontal
-    global lang_data_genInfo_specials_LEDinternal
-    global lang_data_genInfo_type_surface
-    global lang_data_genInfo_type_concealed
-    global lang_data_genInfo_type_concealedMF
-    global lang_data_glassMeasure_type_mirror3
-    global lang_data_glassMeasure_type_mirror6
-    global lang_data_glassMeasure_type_glass6
-    global lang_error_calculation
-    global lang_error_inputs
-    global lang_calc_success
-    global lang_calc_failed
-    global lang_creation_success
-    global lang_creation_failed
-    global lang_update_info
+            readLangFile(langFile)
+
+            return True
+
+        except KeyError:
+
+            dict_config["activelang"] = "Program Standart"
+
+            writeConfigINI()
+
+            return False
+
+def checkLangFile(langFile):
 
     lang = ConfigParser()
 
+    lang.read(langFile)
+
+    for entry in dict_lang:
+
+        if entry not in lang["language"]:
+
+            return False
+
+    for entry in dict_tooltips:
+
+        if entry not in lang["tooltip"]:
+
+            return False
+
+    return True
+
+def readLangFile(langFile):
+
+    lang = ConfigParser()
+    lang.optionxform = str
+
     lang.read(langFile, "UTF-8")
 
-    language = lang["language"]
+    # language section
 
-    lang_general_width                              = language["lang_general_width"].replace('"', "")
-    lang_general_height                             = language["lang_general_height"].replace('"', "")
-    lang_general_depth                              = language["lang_general_depth"].replace('"', "")
-    lang_general_length                             = language["lang_general_length"].replace('"', "")
-    lang_general_count                              = language["lang_general_count"].replace('"', "")
-    lang_general_type                               = language["lang_general_type"].replace('"', "")
-    lang_general_override                           = language["lang_general_override"].replace('"', "")
-    lang_general_position                           = language["lang_general_position"].replace('"', "")
-    lang_general_no                                 = language["lang_general_no"].replace('"', "")
-    lang_general_yes                                = language["lang_general_yes"].replace('"', "")
-    lang_general_none                               = language["lang_general_none"].replace('"', "")
-    lang_general_with                               = language["lang_general_with"].replace('"', "")
-    lang_general_without                            = language["lang_general_without"].replace('"', "")
-    lang_general_ID                                 = language["lang_general_ID"].replace('"', "")
-    lang_general_name                               = language["lang_general_name"].replace('"', "")
-    lang_frmGeneralInfo                             = language["lang_frmGeneralInfo"].replace('"', "")
-    lang_genInfo_orderID                            = language["lang_genInfo_orderID"].replace('"', "")
-    lang_genInfo_date                               = language["lang_genInfo_date"].replace('"', "")
-    lang_genInfo_pto                                = language["lang_genInfo_pto"].replace('"', "")
-    lang_genInfo_specials                           = language["lang_genInfo_specials"].replace('"', "")
-    lang_frmMeasure                                 = language["lang_frmMeasure"].replace('"', "")
-    lang_frmColor                                   = language["lang_frmColor"].replace('"', "")
-    lang_color_aluminum                             = language["lang_color_aluminum"].replace('"', "")
-    lang_color_unicolor                             = language["lang_color_unicolor"].replace('"', "")
-    lang_color_wood                                 = language["lang_color_wood"].replace('"', "")
-    lang_color_material                             = language["lang_color_material"].replace('"', "")
-    lang_frmCorpusInfo                              = language["lang_frmCorpusInfo"].replace('"', "")
-    lang_corInfo_light                              = language["lang_corInfo_light"].replace('"', "")
-    lang_corInfo_indLight                           = language["lang_corInfo_indLight"].replace('"', "")
-    lang_corInfo_door                               = language["lang_corInfo_door"].replace('"', "")
-    lang_corInfo_shelf                              = language["lang_corInfo_shelf"].replace('"', "")
-    lang_corInfo_overhangUpper                      = language["lang_corInfo_overhangUpper"].replace('"', "")
-    lang_corInfo_overhangLower                      = language["lang_corInfo_overhangLower"].replace('"', "")
-    lang_frmExtra                                   = language["lang_frmExtra"].replace('"', "")
-    lang_extra_measure                              = language["lang_extra_measure"].replace('"', "")
-    lang_extra_covered                              = language["lang_extra_covered"].replace('"', "")
-    lang_frmCorpusMeasure                           = language["lang_frmCorpusMeasure"].replace('"', "")
-    lang_frmGlassMeasure                            = language["lang_frmGlassMeasure"].replace('"', "")
-    lang_frmPackaging                               = language["lang_frmPackaging"].replace('"', "")
-    lang_frmInfo                                    = language["lang_frmInfo"].replace('"', "")
-    lang_button_calc                                = language["lang_button_calc"].replace('"', "")
-    lang_button_reset                               = language["lang_button_reset"].replace('"', "")
-    lang_button_create                              = language["lang_button_create"].replace('"', "")
-    lang_button_load                                = language["lang_button_load"].replace('"', "")
-    lang_button_settings                            = language["lang_button_settings"].replace('"', "")
-    lang_button_quit                                = language["lang_button_quit"].replace('"', "")
-    lang_button_save                                = language["lang_button_save"].replace('"', "")
-    lang_button_close                               = language["lang_button_close"].replace('"', "")
-    lang_button_update                              = language["lang_button_update"].replace('"', "")
-    lang_button_updateStart                         = language["lang_button_updateStart"].replace('"', "")
-    lang_button_github                              = language["lang_button_github"].replace('"', "")
-    lang_frmPrgInfo                                 = language["lang_frmPrgInfo"].replace('"', "")
-    lang_prgInfo_contact                            = language["lang_prgInfo_contact"].replace('"', "")
-    lang_prgInfo_git                                = language["lang_prgInfo_git"].replace('"', "")
-    lang_frmFileHandling                            = language["lang_frmFileHandling"].replace('"', "")
-    lang_fileHandling_saveDir                       = language["lang_fileHandling_saveDir"].replace('"', "")
-    lang_fileHandling_calculate                     = language["lang_fileHandling_calculate"].replace('"', "")
-    lang_fileHandling_RCFile                        = language["lang_fileHandling_RCFile"].replace('"', "")
-    lang_fileHandling_openPDF                       = language["lang_fileHandling_openPDF"].replace('"', "")
-    lang_fileHandling_printPDF                      = language["lang_fileHandling_printPDF"].replace('"', "")
-    lang_fileHandling_files                         = language["lang_fileHandling_files"].replace('"', "")
-    lang_frmMatPresets                              = language["lang_frmMatPresets"].replace('"', "")
-    lang_matPresets_packaging                       = language["lang_matPresets_packaging"].replace('"', "")
-    lang_matPresets_wood                            = language["lang_matPresets_wood"].replace('"', "")
-    lang_matPresets_aluminum                        = language["lang_matPresets_aluminum"].replace('"', "")
-    lang_matPresets_LEDFrontal                      = language["lang_matPresets_LEDFrontal"].replace('"', "")
-    lang_matPresets_LEDInternal                     = language["lang_matPresets_LEDInternal"].replace('"', "")
-    lang_frmOther                                   = language["lang_frmOther"].replace('"', "")
-    lang_other_autoUpdate                           = language["lang_other_autoUpdate"].replace('"', "")
-    lang_other_language                             = language["lang_other_language"].replace('"', "")
-    lang_other_info                                 = language["lang_other_info"].replace('"', "")
-    lang_frmUpdateInfo                              = language["lang_frmUpdateInfo"].replace('"', "")
-    lang_updateInfo_statusNone                      = language["lang_updateInfo_statusNone"].replace('"', "")
-    lang_updateInfo_statusTrue                      = language["lang_updateInfo_statusTrue"].replace('"', "")
-    lang_updateInfo_statusFalse                     = language["lang_updateInfo_statusFalse"].replace('"', "")
-    lang_updateInfo_versionUsed                     = language["lang_updateInfo_versionUsed"].replace('"', "")
-    lang_updateInfo_versionLatest                   = language["lang_updateInfo_versionLatest"].replace('"', "")
-    lang_frmChangelog                               = language["lang_frmChangelog"].replace('"', "")
-    lang_changlog_false                             = language["lang_changlog_false"].replace('"', "")
-    lang_frmUpdateSettings                          = language["lang_frmUpdateSettings"].replace('"', "")
-    lang_updateSettings_experimental                = language["lang_updateSettings_experimental"].replace('"', "")
-    lang_updateSettings_exportConfig                = language["lang_updateSettings_exportConfig"].replace('"', "")
-    lang_updateSettings_exportDatabase              = language["lang_updateSettings_exportDatabase"].replace('"', "")
-    lang_updateSettings_shortcut                    = language["lang_updateSettings_shortcut"].replace('"', "")
-    lang_msg_rcoverride                             = language["lang_msg_rcoverride"].replace('"', "")
-    lang_msg_pdfoverride                            = language["lang_msg_pdfoverride"].replace('"', "")
-    lang_msg_doorAmountInvalid                      = language["lang_msg_doorAmountInvalid"].replace('"', "")
-    lang_data_corInfo_light_warm                    = language["lang_data_corInfo_light_warm"].replace('"', "")
-    lang_data_corInfo_light_neutral                 = language["lang_data_corInfo_light_neutral"].replace('"', "")
-    lang_data_corInfo_light_cct                     = language["lang_data_corInfo_light_cct"].replace('"', "")
-    lang_data_corInfo_light_rgb                     = language["lang_data_corInfo_light_rgb"].replace('"', "")
-    lang_data_corpusMeasure_type_ground             = language["lang_data_corpusMeasure_type_ground"].replace('"', "")
-    lang_data_corpusMeasure_type_side               = language["lang_data_corpusMeasure_type_side"].replace('"', "")
-    lang_data_corpusMeasure_type_middleground       = language["lang_data_corpusMeasure_type_middleground"].replace('"', "")
-    lang_data_corpusMeasure_type_middleside         = language["lang_data_corpusMeasure_type_middleside"].replace('"', "")
-    lang_data_corpusMeasure_type_MF_ground          = language["lang_data_corpusMeasure_type_MF_ground"].replace('"', "")
-    lang_data_corpusMeasure_type_MF_side            = language["lang_data_corpusMeasure_type_MF_side"].replace('"', "")
-    lang_data_corpusMeasure_type_backwall           = language["lang_data_corpusMeasure_type_backwall"].replace('"', "")
-    lang_data_corpusMeasure_type_ground_short       = language["lang_data_corpusMeasure_type_ground_short"].replace('"', "")
-    lang_data_corpusMeasure_type_side_short         = language["lang_data_corpusMeasure_type_side_short"].replace('"', "")
-    lang_data_corpusMeasure_type_middleground_short = language["lang_data_corpusMeasure_type_middleground_short"].replace('"', "")
-    lang_data_corpusMeasure_type_middleside_short   = language["lang_data_corpusMeasure_type_middleside_short"].replace('"', "")
-    lang_data_corpusMeasure_type_MF_ground_short    = language["lang_data_corpusMeasure_type_MF_ground_short"].replace('"', "")
-    lang_data_corpusMeasure_type_MF_side_short      = language["lang_data_corpusMeasure_type_MF_side_short"].replace('"', "")
-    lang_data_corpusMeasure_type_backwall_short     = language["lang_data_corpusMeasure_type_backwall_short"].replace('"', "")
-    lang_data_extra_type_1vert                      = language["lang_data_extra_type_1vert"].replace('"', "")
-    lang_data_extra_type_2vert                      = language["lang_data_extra_type_2vert"].replace('"', "")
-    lang_data_extra_type_1hori                      = language["lang_data_extra_type_1hori"].replace('"', "")
-    lang_data_genInfo_specials_LEDfrontal           = language["lang_data_genInfo_specials_LEDfrontal"].replace('"', "")
-    lang_data_genInfo_specials_LEDinternal          = language["lang_data_genInfo_specials_LEDinternal"].replace('"', "")
-    lang_data_genInfo_type_surface                  = language["lang_data_genInfo_type_surface"].replace('"', "")
-    lang_data_genInfo_type_concealed                = language["lang_data_genInfo_type_concealed"].replace('"', "")
-    lang_data_genInfo_type_concealedMF              = language["lang_data_genInfo_type_concealedMF"].replace('"', "")
-    lang_data_glassMeasure_type_mirror3             = language["lang_data_glassMeasure_type_mirror3"].replace('"', "")
-    lang_data_glassMeasure_type_mirror6             = language["lang_data_glassMeasure_type_mirror6"].replace('"', "")
-    lang_data_glassMeasure_type_glass6              = language["lang_data_glassMeasure_type_glass6"].replace('"', "")
-    lang_error_calculation                          = language["lang_error_calculation"].replace('"', "")
-    lang_error_inputs                               = language["lang_error_inputs"].replace('"', "")
-    lang_calc_success                               = language["lang_calc_success"].replace('"', "")
-    lang_calc_failed                                = language["lang_calc_failed"].replace('"', "")
-    lang_creation_success                           = language["lang_creation_success"].replace('"', "")
-    lang_creation_failed                            = language["lang_creation_failed"].replace('"', "")
-    lang_update_info                                = language["lang_update_info"].replace('"', "")
+    for entry in lang["language"]:
 
-    global dict_tooltips
+        print(entry)
 
-    tooltip = lang["tooltip"]
+        dict_lang[entry] = lang["language"][entry].replace('"', "")
 
-    newdict_tooltips = {
-        0  :     "ERROR",
-        1  :     tooltip["tool_genInfo_orderID"].replace('"', ""),
-        2  :     tooltip["tool_genInfo_date"].replace('"', ""),
-        3  :     tooltip["tool_genInfo_type"].replace('"', ""),
-        4  :     tooltip["tool_genInfo_pto"].replace('"', ""),
-        5  :     tooltip["tool_genInfo_specials"].replace('"', ""),
-        6  :     tooltip["tool_measure_width"].replace('"', ""),
-        7  :     tooltip["tool_measure_height"].replace('"', ""),
-        8  :     tooltip["tool_measure_depth"].replace('"', ""),
-        9  :     tooltip["tool_corInfo_light"].replace('"', ""),
-        10 :     tooltip["tool_corInfo_indLight"].replace('"', ""),
-        11 :     tooltip["tool_corInfo_doors"].replace('"', ""),
-        12 :     tooltip["tool_corInfo_shelfs"].replace('"', ""),
-        13 :     tooltip["tool_corInfo_overhangUpper"].replace('"', ""),
-        14 :     tooltip["tool_corInfo_overhangLower"].replace('"', ""),
-        15 :     tooltip["tool_extra_type"].replace('"', ""),
-        16 :     tooltip["tool_extra_measure"].replace('"', ""),
-        17 :     tooltip["tool_extra_covered"].replace('"', ""),
-        18 :     tooltip["tool_color_select"].replace('"', ""),
-        19 :     tooltip["tool_color_showSelected"].replace('"', ""),
-        20 :     tooltip["tool_corpusMeasurement"].replace('"', ""),
-        21 :     tooltip["tool_glassMeasurement"].replace('"', ""),
-        22 :     tooltip["tool_packaging_width"].replace('"', ""),
-        23 :     tooltip["tool_packaging_height"].replace('"', ""),
-        24 :     tooltip["tool_packaging_depth"].replace('"', ""),
-        25 :     tooltip["tool_buttons_calc"].replace('"', ""),
-        26 :     tooltip["tool_buttons_reset"].replace('"', ""),
-        27 :     tooltip["tool_buttons_create"].replace('"', ""),
-        28 :     tooltip["tool_buttons_load"].replace('"', ""),
-        29 :     tooltip["tool_buttons_settings"].replace('"', ""),
-        30 :     tooltip["tool_buttons_quit"].replace('"', ""),
-        31 :     tooltip["tool_other_override"].replace('"', ""),
-        32 :     tooltip["tool_textbox"].replace('"', "")
-    }
+    # tooltip section
 
-    dict_tooltips = dict_tooltips | newdict_tooltips
+    for entry in lang["tooltip"]:
 
-def readConfigINI():
+        dict_tooltips[entry] = lang["tooltip"][entry].replace('"', "")
+
+# --- config ---
+
+def checkConfigINI():
+
+    # create ini if none exists
 
     if os.path.isfile(fPth_config) == False:
 
         writeConfigINI()
         return
 
+    # else check
+
     config = ConfigParser()
 
     config.read(fPth_config)
 
-    presets = config["presets"]
+    for entry in dict_config:
 
-    global packingMatThickness
-    packingMatThickness = int(presets["packingmatthickness"])
+        if entry not in config["presets"]:
 
-    global woodenThickness
-    woodenThickness = int(presets["woodenthickness"])
+            return False
 
-    global aluminiumThickness
-    aluminiumThickness = int(presets["aluminiumthickness"])
+    for entry in dict_updateConfig:
 
-    global LEDThicknessFrontal
-    LEDThicknessFrontal = int(presets["ledthicknessfrontal"])
+        if entry not in config["updater"]:
 
-    global LEDThicknessInternal
-    LEDThicknessInternal = int(presets["ledthicknessinternal"])
+            return False
 
-    global saveDir
-    saveDir = presets["savedir"]
+    return True
 
-    global calculateBeforeCreate
-    calculateBeforeCreate = bool(int(presets["calculatebeforecreate"]))
+def readConfigINI():
 
-    global createRCFile
-    createRCFile = bool(int(presets["creatercfile"]))
+    # create ini if none exists
 
-    global openPDF
-    openPDF = bool(int(presets["openpdfaftercreation"]))
+    if os.path.isfile(fPth_config) == False:
 
-    global printPDF
-    printPDF = bool(int(presets["printpdfaftercreation"]))
+        writeConfigINI()
+        return
 
-    global activeLang
-    activeLang = presets["activelang"]
+    # read ini
 
-    updater = config["updater"]
+    global dict_config
+    global dict_updateConfig
 
-    global autoaskUpdate
-    autoaskUpdate = bool(int(updater["autoaskupdate"]))
+    dict_config.clear()
+    dict_updateConfig.clear()
 
-    global updaterExperimentalBuilds
-    updaterExperimentalBuilds = bool(int(updater["experimental"]))
+    config = ConfigParser()
 
-    global updaterExportConfig
-    updaterExportConfig = bool(int(updater["exportconfig"]))
+    config.read(fPth_config)
 
-    global updaterExportDatabase
-    updaterExportDatabase = bool(int(updater["exportdatabase"]))
+    for section in config:
 
-    global updaterShortcut
-    updaterShortcut = bool(int(updater["shortcut"]))
+        for entry in config[section]:
+
+            cont = config[section][entry]
+
+            try:
+
+                if cont[0] == "{":
+
+                    out = int(cont[ 1 : (len(cont) - 1) ])
+
+                elif cont[0] == "<":
+
+                    out = bool(int(cont[ 1 : (len(cont) - 1) ]))
+
+                elif cont[0] == "[":
+
+                    out = float(cont[ 1 : (len(cont) - 1) ])
+
+                else:
+
+                    out = cont
+
+            except IndexError:
+
+                out = cont
+
+            if section == "presets":
+
+                dict_config[entry] = out
+
+            elif section == "updater":
+
+                dict_updateConfig[entry] = out
 
 def writeConfigINI():
-
-    checkLanguage(True)
 
     config = ConfigParser()
 
     config["presets"] = {
 
-        "packingmatthickness" : packingMatThickness,
-        "woodenthickness" : woodenThickness,
-        "aluminiumthickness" : aluminiumThickness,
-        "ledthicknessfrontal" : LEDThicknessFrontal,
-        "ledthicknessinternal" : LEDThicknessInternal,
-        "savedir" : saveDir,
-        "calculatebeforecreate" : int(calculateBeforeCreate),
-        "creatercfile" : int(createRCFile),
-        "openpdfaftercreation" : int(openPDF),
-        "printpdfaftercreation" : int(printPDF),
-        "activelang" : activeLang
+        "packingmatthickness"   : "{" + str(dict_config["packingmatthickness"])        + "}",
+        "woodenthickness"       : "{" + str(dict_config["woodenthickness"])            + "}",
+        "aluminumthickness"     : "{" + str(dict_config["aluminumthickness"])          + "}",
+        "ledthicknessfrontal"   : "{" + str(dict_config["ledthicknessfrontal"])        + "}",
+        "ledthicknessinternal"  : "{" + str(dict_config["ledthicknessinternal"])       + "}",
+        "savedir"               :       str(dict_config["savedir"])                         ,
+        "calculatebeforecreate" : "<" + str(int(dict_config["calculatebeforecreate"])) + ">",
+        "creatercfile"          : "<" + str(int(dict_config["creatercfile"]))          + ">",
+        "openpdf"               : "<" + str(int(dict_config["openpdf"]))               + ">",
+        "printpdf"              : "<" + str(int(dict_config["printpdf"]))              + ">",
+        "activelang"            :       str(dict_config["activelang"])                      ,
+        "woodensubtraction"     : "[" + str(dict_config["woodensubtraction"])          + "]",
+        "aluminumsubtraction"   : "[" + str(dict_config["aluminumsubtraction"])        + "]"
 
     }
 
     config["updater"] = {
 
-        "autoaskUpdate" : int(autoaskUpdate),
-        "experimental" : int(updaterExperimentalBuilds),
-        "exportConfig" : int(updaterExportConfig),
-        "exportDatabase" : int(updaterExportDatabase),
-        "shortcut" : int(updaterShortcut)
+        "autoaskupdate"             : "<" + str(int(dict_updateConfig["autoaskupdate"]))             + ">",
+        "updaterexperimentalbuilds" : "<" + str(int(dict_updateConfig["updaterexperimentalbuilds"])) + ">",
+        "updaterexportconfig"       : "<" + str(int(dict_updateConfig["updaterexportconfig"]))       + ">",
+        "updaterexportdatabase"     : "<" + str(int(dict_updateConfig["updaterexportdatabase"]))     + ">",
+        "updatershortcut"           : "<" + str(int(dict_updateConfig["updatershortcut"]))           + ">"
 
     }
 
@@ -791,33 +648,55 @@ def writeConfigINI():
 
         config.write(configfile)
 
-def writeRCFile():
+# --- rc-file ---
+
+def writeRCFile(filePath = None):
 
     from data import uiHandler
 
-    rcfOut = None
+    if filePath != None:
 
-    if saveDir == "":
-
-        fileOut = os.path.join(os.curdir, "output")
-
-        if os.path.isdir(fileOut) == False:
-
-            os.mkdir(fileOut)
-
-        rcfOut = os.path.join(fileOut, "rcf")
-
-        if os.path.isdir(rcfOut) == False:
-
-            os.mkdir(rcfOut)
+        fPth_rcOutput = filePath
 
     else:
 
-        rcfOut = os.path.join(saveDir, "rcf")
+        rcfOut = None
 
-        if os.path.isdir(rcfOut) == False:
+        if dict_config["savedir"] == "":
 
-            os.mkdir(rcfOut)
+            fileOut = os.path.join(os.curdir, "output")
+
+            if os.path.isdir(fileOut) == False:
+
+                os.mkdir(fileOut)
+
+            rcfOut = os.path.join(fileOut, "rcf")
+
+            if os.path.isdir(rcfOut) == False:
+
+                os.mkdir(rcfOut)
+
+        else:
+
+            rcfOut = os.path.join(dict_config["savedir"], "rcf")
+
+            if os.path.isdir(rcfOut) == False:
+
+                os.mkdir(rcfOut)
+
+        rcFileName = "project.rcf"
+
+        if uiHandler.ety_genInfo_orderIDVar.get() != "":
+
+            rcFileName = uiHandler.ety_genInfo_orderIDVar.get() + ".rcf"
+
+        fPth_rcOutput = os.path.join(rcfOut, rcFileName)
+
+        if os.path.isfile(fPth_rcOutput) == True:
+
+            if tk.messagebox.askyesno(title = titleVersion, message = dict_lang["lang_msg_rcoverride"]) == False:
+
+                return
 
     rcfiler = ConfigParser()
 
@@ -928,31 +807,19 @@ def writeRCFile():
         "packdepth"     : uiHandler.ety_packaging_depthVar.get()
     }
 
-    rcFileName = "project.rcf"
-
-    if uiHandler.ety_genInfo_orderIDVar.get() != "":
-
-        rcFileName = uiHandler.ety_genInfo_orderIDVar.get() + ".rcf"
-
-    fPth_rcOutput = os.path.join(rcfOut, rcFileName)
-
-    if os.path.isfile(fPth_rcOutput) == True:
-
-        if tkmsg.askyesno(title = titleVersion, message = lang_msg_rcoverride) == False:
-
-            return
-
     with open(fPth_rcOutput, "w") as rcfile:
 
         rcfiler.write(rcfile)
 
     return True
 
+# --- tmp-Folder ---
+
 def createTmpFolder():
 
-    if os.path.isdir(fold_tmp) == False:
+    if os.path.isdir(tmpDir) == False:
 
-        os.mkdir(fold_tmp)
+        os.mkdir(tmpDir)
         return True
 
     else:
@@ -961,9 +828,9 @@ def createTmpFolder():
 
 def deleteTmpFolder():
 
-    if os.path.isdir(fold_tmp) == True:
+    if os.path.isdir(tmpDir) == True:
 
-        shutil.rmtree(fold_tmp)
+        shutil.rmtree(tmpDir)
         return True
 
     else:

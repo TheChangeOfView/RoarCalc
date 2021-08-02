@@ -95,8 +95,8 @@ def calculateCuttingsCorpus(corMainWidth: int, corMainHeight: int, corMainDepth:
 
     if aluminiumFrame == False and LED == "frontal":
 
-        corGroundWidth -= dataHandler.LEDThicknessFrontal
-        corSideWidth -= dataHandler.LEDThicknessFrontal
+        corGroundWidth -= dataHandler.dict_config["ledthicknessfrontal"]
+        corSideWidth -= dataHandler.dict_config["ledthicknessfrontal"]
 
     setMeasureUI(1, corMainWidth, corGroundWidth, 1, 2)
     setMeasureUI(2, corMainHeight, corSideWidth, 2, 2)
@@ -116,11 +116,11 @@ def calculateCuttingsCorpus(corMainWidth: int, corMainHeight: int, corMainDepth:
         showCalcError(1)
         return False
 
-    matThickness = dataHandler.woodenThickness
+    matThickness = dataHandler.dict_config["woodenthickness"]
 
     if aluminiumFrame == True:
 
-        matThickness = dataHandler.aluminiumThickness
+        matThickness = dataHandler.dict_config["aluminumthickness"]
 
     if doorAmount == 4:
 
@@ -175,15 +175,15 @@ def calculateCuttingsGlass(corMainWidth: int, corMainHeight: int, corMainDepth: 
     #-- MIRRORS ---------------------------------------------------------------------
 
     try:
-        
-        if extraShelfs != 0:
-            extraMeasure = int(uiHandler.ety_extra_measureVar.get())
-            overhangUpper = 0
-            overhangLower = 0
-        else:
+
+        if  extraShelfs == 0 and extraWalls == 0:
             extraMeasure = 0
             overhangUpper = int(uiHandler.ety_corInfo_overhangUpperVar.get())
             overhangLower = int(uiHandler.ety_corInfo_overhangLowerVar.get())
+        else:
+            extraMeasure = int(uiHandler.ety_extra_measureVar.get())
+            overhangUpper = 0
+            overhangLower = 0
 
         doorAmount = int(uiHandler.ety_corInfo_doorVar.get())
         shelfAmount = int(uiHandler.ety_corInfo_shelfVar.get())
@@ -195,13 +195,13 @@ def calculateCuttingsGlass(corMainWidth: int, corMainHeight: int, corMainDepth: 
 
     if aluminiumFrame == False:
    
-        matThickness = dataHandler.woodenThickness
-        matSubtraction = dataHandler.woodenSubtraction
+        matThickness = dataHandler.dict_config["woodenthickness"]
+        matSubtraction = dataHandler.dict_config["woodensubtraction"]
 
     else:
 
-        matThickness = dataHandler.aluminiumThickness
-        matSubtraction = dataHandler.aluminiumSubtraction
+        matThickness = dataHandler.dict_config["aluminumthickness"]
+        matSubtraction = dataHandler.dict_config["aluminumsubtraction"]
 
     mainMirrorCount = doorAmount * 2
     mainMirrorLength = corMainHeight
@@ -348,9 +348,9 @@ def calculateCuttingsGlass(corMainWidth: int, corMainHeight: int, corMainDepth: 
 
 def calculateCuttingsPackaging(corMainWidth: int, corMainHeight: int, corMainDepth: int):
 
-    packWidth = corMainWidth + (dataHandler.packingMatThickness * 2)
-    packHeight = corMainHeight + (dataHandler.packingMatThickness * 2)
-    packDepth = corMainDepth + (dataHandler.packingMatThickness * 2)
+    packWidth = corMainWidth + (dataHandler.dict_config["packingmatthickness"] * 2)
+    packHeight = corMainHeight + (dataHandler.dict_config["packingmatthickness"] * 2)
+    packDepth = corMainDepth + (dataHandler.dict_config["packingmatthickness"] * 2)
 
     uiHandler.ety_packaging_widthVar.set(packWidth)
     uiHandler.ety_packaging_heightVar.set(packHeight)
@@ -482,5 +482,5 @@ def setMeasureUI(pos: int, length: int, width: int, index: int, count: int, isGl
 
 def showCalcError(code: int):
 
-    msg = dataHandler.lang_error_calculation + " {:05d}".format(code)
+    msg = dataHandler.dict_lang["lang_error_calculation"] + " {:05d}".format(code)
     tkmsg.showerror(title = dataHandler.titleVersion, message = msg)
