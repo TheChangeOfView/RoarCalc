@@ -883,29 +883,29 @@ class mainUserInterface(tk.Frame):
 
         # globals
         global ntb_colorcode
-        global tvw_ntbColor_aluminum
         global tvw_ntbColor_unicolor
         global tvw_ntbColor_wooden
         global tvw_ntbColor_material
+        global tvw_ntbColor_aluminum
 
-        global tvw_ntbColor_aluminum_reversed
         global tvw_ntbColor_unicolor_reversed
         global tvw_ntbColor_wooden_reversed
         global tvw_ntbColor_material_reversed
+        global tvw_ntbColor_aluminum_reversed
 
         # frame
         frm_color = ttk.LabelFrame(master = frm_mainLeft, text = dataHandler.dict_lang["lang_frmColor"], style = "Bold.TLabelframe")
         frm_color.grid(row = 2, column = 0, columnspan = 2, padx = 5, pady = 0)
 
         # icon binding
-        ico_colorcode_aluminum = Image.open(dataHandler.fPth_imageAluminum)
-        self.ptk_colorcode_aluminum = ImageTk.PhotoImage(ico_colorcode_aluminum)
         ico_colorcode_unicolor = Image.open(dataHandler.fPth_imageUnicolor)
         self.ptk_colorcode_unicolor = ImageTk.PhotoImage(ico_colorcode_unicolor)
         ico_colorcode_wood = Image.open(dataHandler.fPth_imageWood)
         self.ptk_colorcode_wood = ImageTk.PhotoImage(ico_colorcode_wood)
         ico_colorcode_material = Image.open(dataHandler.fPth_imageMaterial)
         self.ptk_colorcode_material = ImageTk.PhotoImage(ico_colorcode_material)
+        ico_colorcode_aluminum = Image.open(dataHandler.fPth_imageAluminum)
+        self.ptk_colorcode_aluminum = ImageTk.PhotoImage(ico_colorcode_aluminum)
 
         # notebook
         ntb_colorcode = ttk.Notebook(master = frm_color)
@@ -913,25 +913,17 @@ class mainUserInterface(tk.Frame):
 
         ntb_colorcode.bind("<<NotebookTabChanged>>", lambda event, notebook = ntb_colorcode: self.notebookTabChange(notebook))
 
-        ntb_frmAluminum = ttk.Frame(master = ntb_colorcode)
         ntb_frmUnicolor = ttk.Frame(master = ntb_colorcode)
         ntb_frmWooden = ttk.Frame(master = ntb_colorcode)
         ntb_frmMaterial = ttk.Frame(master = ntb_colorcode)
+        ntb_frmAluminum = ttk.Frame(master = ntb_colorcode)
         
-        ntb_colorcode.add(ntb_frmAluminum, text = dataHandler.dict_lang["lang_color_aluminum"], image = self.ptk_colorcode_aluminum, compound = tk.LEFT)
         ntb_colorcode.add(ntb_frmUnicolor, text = dataHandler.dict_lang["lang_color_unicolor"], image = self.ptk_colorcode_unicolor, compound = tk.LEFT)
         ntb_colorcode.add(ntb_frmWooden, text = dataHandler.dict_lang["lang_color_wood"], image = self.ptk_colorcode_wood, compound = tk.LEFT)
         ntb_colorcode.add(ntb_frmMaterial, text = dataHandler.dict_lang["lang_color_material"], image = self.ptk_colorcode_material, compound = tk.LEFT)
+        ntb_colorcode.add(ntb_frmAluminum, text = dataHandler.dict_lang["lang_color_aluminum"], image = self.ptk_colorcode_aluminum, compound = tk.LEFT)
 
         # input
-        tvw_ntbColor_aluminum = ttk.Treeview(master = ntb_frmAluminum, columns = ("id", "name"), show = "headings", height = 12)
-        tvw_ntbColor_aluminum.column("id", width = 75, stretch = False)
-        tvw_ntbColor_aluminum.column("name", width = 245, stretch = False)
-        tvw_ntbColor_aluminum.heading("id", text = dataHandler.dict_lang["lang_general_ID"], \
-            command = lambda treeview = tvw_ntbColor_aluminum, column = 0: self.treeviewSort(treeview, column))
-        tvw_ntbColor_aluminum.heading("name", text = dataHandler.dict_lang["lang_general_name"], \
-            command = lambda treeview = tvw_ntbColor_aluminum, column = 1: self.treeviewSort(treeview, column))
-
         tvw_ntbColor_unicolor = ttk.Treeview(master = ntb_frmUnicolor, columns = ("id", "name"), show = "headings", height = 12)
         tvw_ntbColor_unicolor.column("id", width = 75, stretch = tk.NO)
         tvw_ntbColor_unicolor.column("name", width = 245, stretch = tk.NO)
@@ -955,42 +947,50 @@ class mainUserInterface(tk.Frame):
             command = lambda treeview = tvw_ntbColor_material, column = 0: self.treeviewSort(treeview, column))
         tvw_ntbColor_material.heading("name", text = dataHandler.dict_lang["lang_general_name"], \
             command = lambda treeview = tvw_ntbColor_material, column = 1: self.treeviewSort(treeview, column))
+            
+        tvw_ntbColor_aluminum = ttk.Treeview(master = ntb_frmAluminum, columns = ("id", "name"), show = "headings", height = 12)
+        tvw_ntbColor_aluminum.column("id", width = 75, stretch = False)
+        tvw_ntbColor_aluminum.column("name", width = 245, stretch = False)
+        tvw_ntbColor_aluminum.heading("id", text = dataHandler.dict_lang["lang_general_ID"], \
+            command = lambda treeview = tvw_ntbColor_aluminum, column = 0: self.treeviewSort(treeview, column))
+        tvw_ntbColor_aluminum.heading("name", text = dataHandler.dict_lang["lang_general_name"], \
+            command = lambda treeview = tvw_ntbColor_aluminum, column = 1: self.treeviewSort(treeview, column))
 
-        tvw_ntbColor_aluminum.bind("<<TreeviewSelect>>", lambda event, treeview = tvw_ntbColor_aluminum: self.treeviewChange(treeview))
         tvw_ntbColor_unicolor.bind("<<TreeviewSelect>>", lambda event, treeview = tvw_ntbColor_unicolor: self.treeviewChange(treeview))
         tvw_ntbColor_wooden.bind("<<TreeviewSelect>>", lambda event, treeview = tvw_ntbColor_wooden: self.treeviewChange(treeview))
         tvw_ntbColor_material.bind("<<TreeviewSelect>>", lambda event, treeview = tvw_ntbColor_material: self.treeviewChange(treeview))
+        tvw_ntbColor_aluminum.bind("<<TreeviewSelect>>", lambda event, treeview = tvw_ntbColor_aluminum: self.treeviewChange(treeview))
 
-        scr_ntbColor_aluminum = ttk.Scrollbar(master = ntb_frmAluminum, orient = tk.VERTICAL)
         scr_ntbColor_unicolor = ttk.Scrollbar(master = ntb_frmUnicolor, orient = tk.VERTICAL)
         scr_ntbColor_wooden = ttk.Scrollbar(master = ntb_frmWooden, orient = tk.VERTICAL)
         scr_ntbColor_material = ttk.Scrollbar(master = ntb_frmMaterial, orient = tk.VERTICAL)
+        scr_ntbColor_aluminum = ttk.Scrollbar(master = ntb_frmAluminum, orient = tk.VERTICAL)
 
         ety_color_selected = ttk.Entry(master = frm_color, textvariable = ety_color_selectedVar, state = "disabled")
 
         # input grid
-        tvw_ntbColor_aluminum.grid(row = 0, column = 0, sticky = "we")
         tvw_ntbColor_unicolor.grid(row = 0, column = 0, sticky = "we")
         tvw_ntbColor_wooden.grid(row = 0, column = 0, sticky = "we")
         tvw_ntbColor_material.grid(row = 0, column = 0, sticky = "we")
+        tvw_ntbColor_aluminum.grid(row = 0, column = 0, sticky = "we")
 
-        scr_ntbColor_aluminum.grid(row = 0, column = 1, sticky = "ns")
         scr_ntbColor_unicolor.grid(row = 0, column = 1, sticky = "ns")
         scr_ntbColor_wooden.grid(row = 0, column = 1, sticky = "ns")
         scr_ntbColor_material.grid(row = 0, column = 1, sticky = "ns")
+        scr_ntbColor_aluminum.grid(row = 0, column = 1, sticky = "ns")
         
         ety_color_selected.grid(row = 1, column = 0, padx = 1, pady = 1, sticky = "we")
 
         # scroll binding
-        tvw_ntbColor_aluminum.configure(yscrollcommand = scr_ntbColor_aluminum.set)
         tvw_ntbColor_unicolor.configure(yscrollcommand = scr_ntbColor_unicolor.set)
         tvw_ntbColor_wooden.configure(yscrollcommand = scr_ntbColor_wooden.set)
         tvw_ntbColor_material.configure(yscrollcommand = scr_ntbColor_material.set)
+        tvw_ntbColor_aluminum.configure(yscrollcommand = scr_ntbColor_aluminum.set)
 
-        scr_ntbColor_aluminum.configure(command = tvw_ntbColor_aluminum.yview)
         scr_ntbColor_unicolor.configure(command = tvw_ntbColor_unicolor.yview)
         scr_ntbColor_wooden.configure(command = tvw_ntbColor_wooden.yview)
         scr_ntbColor_material.configure(command = tvw_ntbColor_material.yview)
+        scr_ntbColor_aluminum.configure(command = tvw_ntbColor_aluminum.yview)
 
         # -------------------------------------- #
         #      Corpus Measure                    #
@@ -1926,27 +1926,27 @@ class mainUserInterface(tk.Frame):
 
         if activeIndex == 0:
 
-            childList = tvw_ntbColor_aluminum.get_children()
-            tvw_ntbColor_aluminum.selection_set(childList[0])
-            tvw_ntbColor_aluminum.see(childList[0])
-
-        elif activeIndex == 1:
-
             childList = tvw_ntbColor_unicolor.get_children()
             tvw_ntbColor_unicolor.selection_set(childList[0])
             tvw_ntbColor_unicolor.see(childList[0])
 
-        elif activeIndex == 2:
+        elif activeIndex == 1:
 
             childList = tvw_ntbColor_wooden.get_children()
             tvw_ntbColor_wooden.selection_set(childList[0])
             tvw_ntbColor_wooden.see(childList[0])
 
-        elif activeIndex == 3:
+        elif activeIndex == 2:
 
             childList = tvw_ntbColor_material.get_children()
             tvw_ntbColor_material.selection_set(childList[0])
             tvw_ntbColor_material.see(childList[0])
+
+        elif activeIndex == 3:
+
+            childList = tvw_ntbColor_aluminum.get_children()
+            tvw_ntbColor_aluminum.selection_set(childList[0])
+            tvw_ntbColor_aluminum.see(childList[0])
         
         lastSelectedListbox = activeIndex
 

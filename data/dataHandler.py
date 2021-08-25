@@ -21,7 +21,7 @@ import shutil
 title = "RoarCalc"
 version = 2
 subversion = 2
-subsubversion = 0
+subsubversion = 1
 
 gitPath = "https://github.com/TheChangeOfView/RoarCalc"
 gitReleasePath = "https://api.github.com/repos/TheChangeOfView/RoarCalc/releases"
@@ -513,8 +513,6 @@ def readLangFile(langFile):
     # language section
 
     for entry in lang["language"]:
-
-        print(entry)
 
         dict_lang[entry] = lang["language"][entry].replace('"', "")
 

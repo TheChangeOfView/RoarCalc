@@ -20,7 +20,7 @@ def calculateCuttings(corMainWidth: int, corMainHeight: int, corMainDepth: int):
     extraWalls = 0
     extraShelfs = 0
 
-    if uiHandler.lastSelectedListbox == 0:
+    if uiHandler.lastSelectedListbox == 3:
 
         aluminiumFrame = True
 
@@ -86,7 +86,7 @@ def calculateCuttingsCorpus(corMainWidth: int, corMainHeight: int, corMainDepth:
     backLength = corMainWidth - 24
     backWidth = corMainHeight - 24
 
-    setMeasureUI(8, backLength, backWidth, 7, 1)
+    setMeasureUI(8, backLength, backWidth, 7, 1, sortMeasures = False)
 
     #-- MAIN CORPUS ---------------------------------------------------------------------
 
@@ -318,7 +318,7 @@ def calculateCuttingsGlass(corMainWidth: int, corMainHeight: int, corMainDepth: 
             setMeasureUI(3, glassLengthOuter, glassesWidth, 3, glassCountOuter, True)
             setMeasureUI(4, glassLengthInner, glassesWidth, 3, glassCountInner, True)
 
-        elif doorAmount == 2 and corMainWidth < 800:
+        elif (doorAmount == 2 and corMainWidth < 800) or doorAmount == 1:
 
             glassesLength = corMainWidth
             glassesLength -= (extraMeasure + matThickness) * extraWalls
@@ -358,7 +358,7 @@ def calculateCuttingsPackaging(corMainWidth: int, corMainHeight: int, corMainDep
 
     return True
 
-def setMeasureUI(pos: int, length: int, width: int, index: int, count: int, isGlass = False):
+def setMeasureUI(pos: int, length: int, width: int, index: int, count: int, isGlass = False, sortMeasures = True):
 
     if pos < 1 or pos > 8:
 
@@ -370,7 +370,7 @@ def setMeasureUI(pos: int, length: int, width: int, index: int, count: int, isGl
         showCalcError(101)
         return False
 
-    if length < width:
+    if length < width and sortMeasures == True:
 
         lengthOld = length
         widthOld = width
