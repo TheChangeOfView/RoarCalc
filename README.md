@@ -23,6 +23,15 @@ This Program is only tested on a windows 10 OS with python 3.9.2 made to run as 
 - Fixed the language file check which caused crashes when the language file did not match the standart layout
 - Fixed extra spaces calculation
 
+
+##### Build 2.2.1
+
+- Changes
+  - Moved the aluminum color codes to the end to prevent misscalculations by inattention
+  - Disabled measure size sorting for backwalls
+
+- Fixed shelf calculation
+
 ## Build 2.1.0
 
 *We're finally on GitHub! Yay!*
